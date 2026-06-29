@@ -11,6 +11,7 @@ export default function App() {
 
   // Interactive state — mirrors the original artifact's on-screen controls.
   const [scenario, setScenario] = useState('median')
+  const [basis, setBasis] = useState('ebitda') // 'ebitda' (EV/EBITDA) | 'sales' (EV/Sales)
   const [exComp, setExComp] = useState({})
   const [exTxn, setExTxn] = useState({})
   const [sizeAdj, setSizeAdj] = useState(0)
@@ -29,8 +30,8 @@ export default function App() {
     setExTxn((e) => { const n = { ...e }; n[i] ? delete n[i] : (n[i] = true); return n })
 
   const view = useMemo(
-    () => (data ? buildView(data, { scenario, exComp, exTxn, sizeAdj }) : null),
-    [data, scenario, exComp, exTxn, sizeAdj],
+    () => (data ? buildView(data, { scenario, basis, exComp, exTxn, sizeAdj }) : null),
+    [data, scenario, basis, exComp, exTxn, sizeAdj],
   )
 
   if (error) return <Centered>Could not load valuation data: {String(error.message || error)}</Centered>
@@ -57,7 +58,7 @@ export default function App() {
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '30px 32px 22px' }}>
         <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.18em', textTransform: 'uppercase', color: '#93c5fd', marginBottom: 10 }}>Indicative Enterprise Valuation</div>
         <h1 style={{ fontWeight: 800, fontSize: 42, lineHeight: 1.05, letterSpacing: '-1.4px', margin: '0 0 12px', color: '#fff', maxWidth: 840 }}>{data.assumptions?.subject_company || 'Michelscom'} — Enterprise Value across scenarios</h1>
-        <p style={{ margin: 0, fontSize: 16, lineHeight: 1.55, color: 'rgba(255,255,255,.78)', maxWidth: 760 }}>EV/EBITDA approach applied to {v.ebitdaLabel} {data.assumptions?.basis_label || 'FY2026E EBITDA'}, benchmarked against listed recruitment &amp; HR-services peers and recent precedent transactions. Toggle a scenario to flex the multiple from the lower quartile, through the median and upper quartile, to the maximum observed multiple.</p>
+        <p style={{ margin: 0, fontSize: 16, lineHeight: 1.55, color: 'rgba(255,255,255,.78)', maxWidth: 760 }}>EV/EBITDA and EV/Sales approaches applied to FY2026E figures, benchmarked against listed recruitment &amp; HR-services peers and recent precedent transactions. Choose a valuation multiple, then flex the scenario from the lower quartile, through the median and upper quartile, to the maximum observed multiple.</p>
       </div>
 
       {/* HERO PANEL */}
@@ -67,6 +68,15 @@ export default function App() {
 
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 28, flexWrap: 'wrap', position: 'relative' }}>
             <div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)', marginBottom: 12 }}>Valuation multiple</div>
+              <div style={{ display: 'inline-flex', background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.14)', borderRadius: 11, padding: 5, gap: 4, marginBottom: 24 }}>
+                {v.multToggle.map((m) => (
+                  <button key={m.key} onClick={() => setBasis(m.key)} style={css(m.btnStyle)}>
+                    <span style={{ fontWeight: 700, fontSize: 15, display: 'block' }}>{m.label}</span>
+                    <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: '.03em', opacity: 0.82 }}>{m.sub}</span>
+                  </button>
+                ))}
+              </div>
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)', marginBottom: 12 }}>Select scenario</div>
               <div style={{ display: 'inline-flex', background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.14)', borderRadius: 11, padding: 5, gap: 4 }}>
                 {v.scenarios.map((s) => (
@@ -78,8 +88,11 @@ export default function App() {
               </div>
               <div style={{ marginTop: 20, display: 'flex', alignItems: 'center', gap: 26, flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)' }}>Basis · {data.assumptions?.basis_label || 'FY2026E EBITDA'}</span>
+                  <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)' }}>{v.basisRowName}</span>
                   <span className="num" style={{ fontWeight: 700, fontSize: 15, color: '#fff', background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.16)', borderRadius: 8, padding: '4px 11px' }}>{v.ebitdaLabel}</span>
+                  {v.basisIsEstimate && (
+                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.04em', textTransform: 'uppercase', color: '#fbbf24' }}>{v.basisEstimateLabel}</span>
+                  )}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)' }}>Size adjustment</span>
@@ -112,8 +125,8 @@ export default function App() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 30, position: 'relative' }}>
-            <HeroMethod title="Comparable Companies" countLabel={`${v.comp.total} listed peers`} mult={v.comp.multLabel} ebitda={v.ebitdaShort} ev={v.comp.evLabel} multColor={v.activeColorLight} />
-            <HeroMethod title="Precedent Transactions" countLabel={`${v.txn.total} deals`} mult={v.txn.multLabel} ebitda={v.ebitdaShort} ev={v.txn.evLabel} multColor={v.activeColorLight} />
+            <HeroMethod title="Comparable Companies" countLabel={`${v.comp.total} listed peers`} multName={v.multName} basisName={v.basisName} mult={v.comp.multLabel} ebitda={v.ebitdaShort} ev={v.comp.evLabel} multColor={v.activeColorLight} />
+            <HeroMethod title="Precedent Transactions" countLabel={`${v.txn.total} deals`} multName={v.multName} basisName={v.basisName} mult={v.txn.multLabel} ebitda={v.ebitdaShort} ev={v.txn.evLabel} multColor={v.activeColorLight} />
           </div>
         </div>
       </div>
@@ -163,7 +176,7 @@ export default function App() {
 
       {/* COMPARABLE COMPANIES */}
       <Panel light>
-        <SectionHead method="Method 1" title={`Comparable companies — ${v.comp.total} listed peers`} rangeLabel={`${v.comp.minLabel}–${v.comp.maxLabel}`} avgLabel={v.comp.avgLabel} selLabel={v.comp.selLabel} someExcluded={v.comp.someExcluded} onReset={() => setExComp({})} />
+        <SectionHead method="Method 1" title={`Comparable companies — ${v.comp.total} listed peers`} multName={v.multName} rangeLabel={`${v.comp.minLabel}–${v.comp.maxLabel}`} avgLabel={v.comp.avgLabel} selLabel={v.comp.selLabel} someExcluded={v.comp.someExcluded} onReset={() => setExComp({})} />
         <CardGrid cards={v.comp.cards} />
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
@@ -175,8 +188,8 @@ export default function App() {
                 <th style={th(null, 'right')}>Employees</th>
                 <th style={th(null, 'right')}>Revenue</th>
                 <th style={th(null, 'right')}>EBITDA</th>
-                <th style={th(null, 'right')}>EV/Sales</th>
-                <th style={th(200, 'right')}>EV/EBITDA</th>
+                <th style={th(150, 'right')}>EV/Sales {v.salesActive && <span style={{ color: '#2563eb' }}>●</span>}</th>
+                <th style={th(150, 'right')}>EV/EBITDA {v.ebitdaActive && <span style={{ color: '#2563eb' }}>●</span>}</th>
               </tr>
             </thead>
             <tbody>
@@ -190,8 +203,8 @@ export default function App() {
                   <td className="num" style={{ padding: 10, textAlign: 'right', color: c.cellColor }}>{c.emp}</td>
                   <td className="num" style={{ padding: 10, textAlign: 'right', color: c.cellColor }}>{c.rev}</td>
                   <td className="num" style={css(c.ebStyle)}>{c.ebitda}</td>
-                  <td className="num" style={{ padding: 10, textAlign: 'right', color: c.cellColor }}>{c.evSales}</td>
-                  <td style={{ padding: 10 }}><MultCell c={c} /></td>
+                  <td style={{ padding: 10 }}><MultCell cell={c.sCell} /></td>
+                  <td style={{ padding: 10 }}><MultCell cell={c.eCell} /></td>
                 </tr>
               ))}
             </tbody>
@@ -201,7 +214,7 @@ export default function App() {
 
       {/* PRECEDENT TRANSACTIONS */}
       <Panel light>
-        <SectionHead method="Method 2" methodColor="#10b981" title={`Precedent transactions — ${v.txn.total} deals`} rangeLabel={`${v.txn.minLabel}–${v.txn.maxLabel}`} avgLabel={v.txn.avgLabel} selLabel={v.txn.selLabel} someExcluded={v.txn.someExcluded} onReset={() => setExTxn({})} accent="#10b981" />
+        <SectionHead method="Method 2" methodColor="#10b981" title={`Precedent transactions — ${v.txn.total} deals`} multName={v.multName} rangeLabel={`${v.txn.minLabel}–${v.txn.maxLabel}`} avgLabel={v.txn.avgLabel} selLabel={v.txn.selLabel} someExcluded={v.txn.someExcluded} onReset={() => setExTxn({})} accent="#10b981" />
         <CardGrid cards={v.txn.cards} />
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
@@ -215,7 +228,8 @@ export default function App() {
                 <th style={th()}>Segment</th>
                 <th style={th(null, 'right')}>Revenue<span style={{ color: '#cbd5e1' }}>¹</span></th>
                 <th style={th(null, 'right')}>EBITDA<span style={{ color: '#cbd5e1' }}>¹</span></th>
-                <th style={th(180, 'right')}>EV/EBITDA</th>
+                <th style={th(140, 'right')}>EV/Sales {v.salesActive && <span style={{ color: '#10b981' }}>●</span>}</th>
+                <th style={th(140, 'right')}>EV/EBITDA {v.ebitdaActive && <span style={{ color: '#10b981' }}>●</span>}</th>
               </tr>
             </thead>
             <tbody>
@@ -231,7 +245,8 @@ export default function App() {
                   <td style={{ padding: 10, color: t.cellColor }}>{t.segment}</td>
                   <td className="num" style={{ padding: 10, textAlign: 'right', color: t.cellColor }}>{t.rev}</td>
                   <td className="num" style={css(t.ebStyle)}>{t.ebitda}</td>
-                  <td style={{ padding: 10 }}><MultCell c={t} /></td>
+                  <td style={{ padding: 10 }}><MultCell cell={t.sCell} maxBar={84} /></td>
+                  <td style={{ padding: 10 }}><MultCell cell={t.eCell} maxBar={84} /></td>
                 </tr>
               ))}
             </tbody>
@@ -274,7 +289,7 @@ function Panel({ children }) {
   )
 }
 
-function HeroMethod({ title, countLabel, mult, ebitda, ev, multColor }) {
+function HeroMethod({ title, countLabel, multName, basisName, mult, ebitda, ev, multColor }) {
   return (
     <div style={{ background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 12, padding: '20px 22px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
@@ -283,12 +298,12 @@ function HeroMethod({ title, countLabel, mult, ebitda, ev, multColor }) {
       </div>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 14 }}>
         <div>
-          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)' }}>EV/EBITDA</div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)' }}>{multName}</div>
           <div className="num" style={{ fontWeight: 700, fontSize: 30, color: multColor }}>{mult}</div>
         </div>
         <div style={{ fontSize: 24, color: 'rgba(255,255,255,.35)', fontWeight: 300 }}>×</div>
         <div>
-          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)' }}>EBITDA</div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)' }}>{basisName}</div>
           <div className="num" style={{ fontWeight: 700, fontSize: 30, color: '#fff' }}>{ebitda}</div>
         </div>
         <div style={{ fontSize: 24, color: 'rgba(255,255,255,.35)', fontWeight: 300, marginLeft: 2 }}>=</div>
@@ -301,7 +316,7 @@ function HeroMethod({ title, countLabel, mult, ebitda, ev, multColor }) {
   )
 }
 
-function SectionHead({ method, methodColor = '#2563eb', title, rangeLabel, avgLabel, selLabel, someExcluded, onReset, accent = '#2563eb' }) {
+function SectionHead({ method, methodColor = '#2563eb', title, multName, rangeLabel, avgLabel, selLabel, someExcluded, onReset, accent = '#2563eb' }) {
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, marginBottom: 20 }}>
       <div>
@@ -309,7 +324,7 @@ function SectionHead({ method, methodColor = '#2563eb', title, rangeLabel, avgLa
         <h2 style={{ fontWeight: 800, fontSize: 21, letterSpacing: '-.4px', margin: 0, color: '#1f2937' }}>{title}</h2>
       </div>
       <div style={{ textAlign: 'right' }}>
-        <div style={{ fontSize: 12.5, fontWeight: 600, color: '#6b7280' }}>EV/EBITDA range <span className="num" style={{ color: '#1f2937', fontWeight: 700 }}>{rangeLabel}</span> · avg <span className="num" style={{ color: '#1f2937', fontWeight: 700 }}>{avgLabel}</span></div>
+        <div style={{ fontSize: 12.5, fontWeight: 600, color: '#6b7280' }}>{multName} range <span className="num" style={{ color: '#1f2937', fontWeight: 700 }}>{rangeLabel}</span> · avg <span className="num" style={{ color: '#1f2937', fontWeight: 700 }}>{avgLabel}</span></div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10, marginTop: 7 }}>
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.04em', color: accent, background: accent === '#10b981' ? '#ecfdf5' : '#eff6ff', border: `1px solid ${accent === '#10b981' ? '#d1fae5' : '#dbeafe'}`, borderRadius: 20, padding: '3px 11px' }}>{selLabel}</span>
           {someExcluded && (
@@ -338,15 +353,19 @@ function CardGrid({ cards }) {
   )
 }
 
-function MultCell({ c }) {
+// One multiple cell (EV/Sales or EV/EBITDA). The active multiple (matching the
+// selected basis) shows a scaled bar and bold value; the inactive one is dimmed.
+function MultCell({ cell, maxBar = 88 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10 }}>
-      <div style={{ flex: 1, height: 6, background: '#f3f4f6', borderRadius: 4, position: 'relative', maxWidth: 120 }}>
-        <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: 4, background: c.barColor, width: c.barPct }} />
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', minWidth: 60 }}>
-        <span className="num" style={{ fontWeight: 700, color: c.multColor }}>{c.evEbitda}</span>
-        {c.adjusted && <span className="num" style={{ fontSize: 10, fontWeight: 600, color: '#c2c8d2', textDecoration: 'line-through' }}>{c.evEbitdaRaw}</span>}
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 9 }}>
+      {cell.active && (
+        <div style={{ flex: 1, height: 6, background: '#f3f4f6', borderRadius: 4, position: 'relative', maxWidth: maxBar }}>
+          <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: 4, background: cell.barColor, width: cell.barW }} />
+        </div>
+      )}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', minWidth: 44 }}>
+        <span className="num" style={{ fontWeight: cell.weight, color: cell.color }}>{cell.num}</span>
+        {cell.adj && <span className="num" style={{ fontSize: 10, fontWeight: 600, color: '#c2c8d2', textDecoration: 'line-through' }}>{cell.raw}</span>}
       </div>
     </div>
   )

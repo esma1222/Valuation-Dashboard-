@@ -34,7 +34,7 @@
   <div style="max-width:1240px;margin:0 auto;padding:30px 32px 22px;">
     
     <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#93c5fd;margin-bottom:10px;">Indicative Enterprise Valuation</div><h1 style="font-weight:800;font-size:42px;line-height:1.05;letter-spacing:-1.4px;margin:0 0 12px;color:#fff;max-width:840px;">Michelscom — Enterprise Value across scenarios</h1>
-    <p style="margin:0;font-size:16px;line-height:1.55;color:rgba(255,255,255,.78);max-width:760px;">EV/EBITDA approach applied to FY2026E EBITDA, benchmarked against listed recruitment &amp; HR-services peers and recent precedent transactions. Toggle a scenario to flex the multiple from the lower quartile, through the median and upper quartile, to the maximum observed multiple.</p>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:rgba(255,255,255,.78);max-width:760px;">EV/EBITDA and EV/Sales approaches applied to FY2026E figures, benchmarked against listed recruitment &amp; HR-services peers and recent precedent transactions. Choose a valuation multiple, then flex the scenario from the lower quartile, through the median and upper quartile, to the maximum observed multiple.</p>
   </div>
 
   <!-- HERO PANEL -->
@@ -44,6 +44,15 @@
 
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:28px;flex-wrap:wrap;position:relative;">
         <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:12px;">Valuation multiple</div>
+          <div style="display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:5px;gap:4px;margin-bottom:24px;">
+            <sc-for list="{{ multToggle }}" as="m" hint-placeholder-count="2">
+              <button onClick="{{ m.onClick }}" style="{{ m.btnStyle }}">
+                <span style="font-weight:700;font-size:15px;display:block;">{{ m.label }}</span>
+                <span style="font-size:10.5px;font-weight:600;letter-spacing:.03em;opacity:.82;">{{ m.sub }}</span>
+              </button>
+            </sc-for>
+          </div>
           <div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:12px;">Select scenario</div>
           <div style="display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:5px;gap:4px;">
             <sc-for list="{{ scenarios }}" as="s" hint-placeholder-count="5">
@@ -55,8 +64,9 @@
           </div>
           <div style="margin-top:20px;display:flex;align-items:center;gap:26px;flex-wrap:wrap;">
             <div style="display:flex;align-items:center;gap:10px;">
-              <span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55);">Basis · FY2026E EBITDA</span>
+              <span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55);">{{ basisRowName }}</span>
               <span class="num" style="font-weight:700;font-size:15px;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:4px 11px;">{{ ebitdaLabel }}</span>
+              <sc-if value="{{ basisIsEstimate }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fbbf24;">est. · edit in tweaks</span></sc-if>
             </div>
             <div style="display:flex;align-items:center;gap:10px;">
               <span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55);">Size adjustment</span>
@@ -92,12 +102,12 @@
           </div>
           <div style="display:flex;align-items:baseline;gap:14px;">
             <div>
-              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">EV/EBITDA</div>
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">{{ multName }}</div>
               <div class="num" style="font-weight:700;font-size:30px;color:{{ activeColorLight }};">{{ comp.multLabel }}</div>
             </div>
             <div style="font-size:24px;color:rgba(255,255,255,.35);font-weight:300;">×</div>
             <div>
-              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">EBITDA</div>
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">{{ basisName }}</div>
               <div class="num" style="font-weight:700;font-size:30px;color:#fff;">{{ ebitdaShort }}</div>
             </div>
             <div style="font-size:24px;color:rgba(255,255,255,.35);font-weight:300;margin-left:2px;">=</div>
@@ -115,12 +125,12 @@
           </div>
           <div style="display:flex;align-items:baseline;gap:14px;">
             <div>
-              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">EV/EBITDA</div>
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">{{ multName }}</div>
               <div class="num" style="font-weight:700;font-size:30px;color:{{ activeColorLight }};">{{ txn.multLabel }}</div>
             </div>
             <div style="font-size:24px;color:rgba(255,255,255,.35);font-weight:300;">×</div>
             <div>
-              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">EBITDA</div>
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">{{ basisName }}</div>
               <div class="num" style="font-weight:700;font-size:30px;color:#fff;">{{ ebitdaShort }}</div>
             </div>
             <div style="font-size:24px;color:rgba(255,255,255,.35);font-weight:300;margin-left:2px;">=</div>
@@ -188,7 +198,7 @@
           <h2 style="font-weight:800;font-size:21px;letter-spacing:-.4px;margin:0;color:#1f2937;">Comparable companies — 14 listed peers</h2>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:12.5px;font-weight:600;color:#6b7280;">EV/EBITDA range <span class="num" style="color:#1f2937;font-weight:700;">{{ comp.minLabel }}–{{ comp.maxLabel }}</span> · avg <span class="num" style="color:#1f2937;font-weight:700;">{{ comp.avgLabel }}</span></div>
+          <div style="font-size:12.5px;font-weight:600;color:#6b7280;">{{ multName }} range <span class="num" style="color:#1f2937;font-weight:700;">{{ comp.minLabel }}–{{ comp.maxLabel }}</span> · avg <span class="num" style="color:#1f2937;font-weight:700;">{{ comp.avgLabel }}</span></div>
           <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:7px;">
             <span style="font-size:11px;font-weight:700;letter-spacing:.04em;color:#2563eb;background:#eff6ff;border:1px solid #dbeafe;border-radius:20px;padding:3px 11px;">{{ comp.selLabel }}</span>
             <sc-if value="{{ comp.someExcluded }}" hint-placeholder-val="{{ true }}">
@@ -221,8 +231,8 @@
               <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">Employees</th>
               <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">Revenue</th>
               <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">EBITDA</th>
-              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">EV/Sales</th>
-              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;width:200px;">EV/EBITDA</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;width:150px;">EV/Sales <sc-if value="{{ salesActive }}" hint-placeholder-val="{{ false }}"><span style="color:#2563eb;">●</span></sc-if></th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;width:150px;">EV/EBITDA <sc-if value="{{ ebitdaActive }}" hint-placeholder-val="{{ true }}"><span style="color:#2563eb;">●</span></sc-if></th>
             </tr>
           </thead>
           <tbody>
@@ -236,15 +246,29 @@
                 <td class="num" style="padding:10px;text-align:right;color:{{ c.cellColor }};">{{ c.emp }}</td>
                 <td class="num" style="padding:10px;text-align:right;color:{{ c.cellColor }};">{{ c.rev }}</td>
                 <td class="num" style="{{ c.ebStyle }}">{{ c.ebitda }}</td>
-                <td class="num" style="padding:10px;text-align:right;color:{{ c.cellColor }};">{{ c.evSales }}</td>
                 <td style="padding:10px;">
-                  <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;">
-                    <div style="flex:1;height:6px;background:#f3f4f6;border-radius:4px;position:relative;max-width:120px;">
-                      <div style="position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:{{ c.barColor }};width:{{ c.barPct }};"></div>
+                  <div style="display:flex;align-items:center;justify-content:flex-end;gap:9px;">
+                    <sc-if value="{{ c.sCell.active }}" hint-placeholder-val="{{ false }}">
+                      <div style="flex:1;height:6px;background:#f3f4f6;border-radius:4px;position:relative;max-width:88px;">
+                        <div style="position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:{{ c.sCell.barColor }};width:{{ c.sCell.barW }};"></div>
+                      </div>
+                    </sc-if>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;min-width:44px;">
+                      <span class="num" style="font-weight:{{ c.sCell.weight }};color:{{ c.sCell.color }};">{{ c.sCell.num }}</span>
+                      <sc-if value="{{ c.sCell.adj }}" hint-placeholder-val="{{ false }}"><span class="num" style="font-size:10px;font-weight:600;color:#c2c8d2;text-decoration:line-through;">{{ c.sCell.raw }}</span></sc-if>
                     </div>
-                    <div style="display:flex;flex-direction:column;align-items:flex-end;min-width:60px;">
-                      <span class="num" style="font-weight:700;color:{{ c.multColor }};">{{ c.evEbitda }}</span>
-                      <sc-if value="{{ c.adjusted }}" hint-placeholder-val="{{ false }}"><span class="num" style="font-size:10px;font-weight:600;color:#c2c8d2;text-decoration:line-through;">{{ c.evEbitdaRaw }}</span></sc-if>
+                  </div>
+                </td>
+                <td style="padding:10px;">
+                  <div style="display:flex;align-items:center;justify-content:flex-end;gap:9px;">
+                    <sc-if value="{{ c.eCell.active }}" hint-placeholder-val="{{ true }}">
+                      <div style="flex:1;height:6px;background:#f3f4f6;border-radius:4px;position:relative;max-width:88px;">
+                        <div style="position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:{{ c.eCell.barColor }};width:{{ c.eCell.barW }};"></div>
+                      </div>
+                    </sc-if>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;min-width:44px;">
+                      <span class="num" style="font-weight:{{ c.eCell.weight }};color:{{ c.eCell.color }};">{{ c.eCell.num }}</span>
+                      <sc-if value="{{ c.eCell.adj }}" hint-placeholder-val="{{ false }}"><span class="num" style="font-size:10px;font-weight:600;color:#c2c8d2;text-decoration:line-through;">{{ c.eCell.raw }}</span></sc-if>
                     </div>
                   </div>
                 </td>
@@ -265,7 +289,7 @@
           <h2 style="font-weight:800;font-size:21px;letter-spacing:-.4px;margin:0;color:#1f2937;">Precedent transactions — 6 comparable deals</h2>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:12.5px;font-weight:600;color:#6b7280;">EV/EBITDA range <span class="num" style="color:#1f2937;font-weight:700;">{{ txn.minLabel }}–{{ txn.maxLabel }}</span> · avg <span class="num" style="color:#1f2937;font-weight:700;">{{ txn.avgLabel }}</span></div>
+          <div style="font-size:12.5px;font-weight:600;color:#6b7280;">{{ multName }} range <span class="num" style="color:#1f2937;font-weight:700;">{{ txn.minLabel }}–{{ txn.maxLabel }}</span> · avg <span class="num" style="color:#1f2937;font-weight:700;">{{ txn.avgLabel }}</span></div>
           <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:7px;">
             <span style="font-size:11px;font-weight:700;letter-spacing:.04em;color:#059669;background:#ecfdf5;border:1px solid #d1fae5;border-radius:20px;padding:3px 11px;">{{ txn.selLabel }}</span>
             <sc-if value="{{ txn.someExcluded }}" hint-placeholder-val="{{ true }}">
@@ -300,7 +324,8 @@
               <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;">Segment</th>
               <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">Revenue<span style="color:#cbd5e1;">¹</span></th>
               <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">EBITDA<span style="color:#cbd5e1;">¹</span></th>
-              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;width:180px;">EV/EBITDA</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;width:140px;">EV/Sales <sc-if value="{{ salesActive }}" hint-placeholder-val="{{ false }}"><span style="color:#10b981;">●</span></sc-if></th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;width:140px;">EV/EBITDA <sc-if value="{{ ebitdaActive }}" hint-placeholder-val="{{ true }}"><span style="color:#10b981;">●</span></sc-if></th>
             </tr>
           </thead>
           <tbody>
@@ -317,13 +342,28 @@
                 <td class="num" style="padding:10px;text-align:right;color:{{ t.cellColor }};">{{ t.rev }}</td>
                 <td class="num" style="{{ t.ebStyle }}">{{ t.ebitda }}</td>
                 <td style="padding:10px;">
-                  <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;">
-                    <div style="flex:1;height:6px;background:#f3f4f6;border-radius:4px;position:relative;max-width:120px;">
-                      <div style="position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:{{ t.barColor }};width:{{ t.barPct }};"></div>
+                  <div style="display:flex;align-items:center;justify-content:flex-end;gap:9px;">
+                    <sc-if value="{{ t.sCell.active }}" hint-placeholder-val="{{ false }}">
+                      <div style="flex:1;height:6px;background:#f3f4f6;border-radius:4px;position:relative;max-width:84px;">
+                        <div style="position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:{{ t.sCell.barColor }};width:{{ t.sCell.barW }};"></div>
+                      </div>
+                    </sc-if>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;min-width:44px;">
+                      <span class="num" style="font-weight:{{ t.sCell.weight }};color:{{ t.sCell.color }};">{{ t.sCell.num }}</span>
+                      <sc-if value="{{ t.sCell.adj }}" hint-placeholder-val="{{ false }}"><span class="num" style="font-size:10px;font-weight:600;color:#c2c8d2;text-decoration:line-through;">{{ t.sCell.raw }}</span></sc-if>
                     </div>
-                    <div style="display:flex;flex-direction:column;align-items:flex-end;min-width:60px;">
-                      <span class="num" style="font-weight:700;color:{{ t.multColor }};">{{ t.evEbitda }}</span>
-                      <sc-if value="{{ t.adjusted }}" hint-placeholder-val="{{ false }}"><span class="num" style="font-size:10px;font-weight:600;color:#c2c8d2;text-decoration:line-through;">{{ t.evEbitdaRaw }}</span></sc-if>
+                  </div>
+                </td>
+                <td style="padding:10px;">
+                  <div style="display:flex;align-items:center;justify-content:flex-end;gap:9px;">
+                    <sc-if value="{{ t.eCell.active }}" hint-placeholder-val="{{ true }}">
+                      <div style="flex:1;height:6px;background:#f3f4f6;border-radius:4px;position:relative;max-width:84px;">
+                        <div style="position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:{{ t.eCell.barColor }};width:{{ t.eCell.barW }};"></div>
+                      </div>
+                    </sc-if>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;min-width:44px;">
+                      <span class="num" style="font-weight:{{ t.eCell.weight }};color:{{ t.eCell.color }};">{{ t.eCell.num }}</span>
+                      <sc-if value="{{ t.eCell.adj }}" hint-placeholder-val="{{ false }}"><span class="num" style="font-size:10px;font-weight:600;color:#c2c8d2;text-decoration:line-through;">{{ t.eCell.raw }}</span></sc-if>
                     </div>
                   </div>
                 </td>
@@ -339,15 +379,17 @@
   <!-- METHODOLOGY -->
   <div style="max-width:1240px;margin:0 auto;padding:0 32px;">
     <div style="margin-top:22px;padding:20px 24px;border:1px dashed rgba(255,255,255,.24);border-radius:12px;font-size:12px;line-height:1.65;color:rgba(255,255,255,.7);">
-      <strong style="color:#fff;">Methodology &amp; disclaimer.</strong> Indicative Enterprise Value derived as FY2026E EBITDA of €2.6m multiplied by EV/EBITDA multiples observed across a screen of 14 listed recruitment &amp; HR-services peers and 6 precedent transactions. Scenarios are defined as: Low = lower quartile, Median &amp; Average = base case, Upside = midpoint of upper quartile and maximum, Max = highest observed multiple. An optional size adjustment discounts the multiples of size-outlier comps only — those whose EBITDA falls outside roughly one-third to three times Michelscom's — to better reflect the target's scale; peers of comparable size are left unadjusted. Quartiles are computed on the respective (adjusted) multiple sets; the blended figure equals the simple average of the two methods unless re-weighted. Figures are indicative, rounded to one decimal place, presented on a cash-free / debt-free Enterprise Value basis (no net-debt bridge to equity value), and do not constitute a fairness opinion or formal valuation. Peer multiples sourced from public FY2025 filings; transaction multiples from announced deal data. Prepared by atares for discussion purposes only.
+      <strong style="color:#fff;">Methodology &amp; disclaimer.</strong> Indicative Enterprise Value derived by applying observed EV/EBITDA or EV/Sales multiples — from a screen of 14 listed recruitment &amp; HR-services peers and 6 precedent transactions — to Michelscom's FY2026E EBITDA (€2.6m) or revenue, depending on the selected multiple. The revenue basis is an editable estimate. Scenarios are defined as: Low = lower quartile, Median &amp; Average = base case, Upside = midpoint of upper quartile and maximum, Max = highest observed multiple. An optional size adjustment discounts the multiples of size-outlier comps only — those whose EBITDA falls outside roughly one-third to three times Michelscom's — to better reflect the target's scale; peers of comparable size are left unadjusted. Quartiles are computed on the respective (adjusted) multiple sets; the blended figure equals the simple average of the two methods unless re-weighted. Figures are indicative, rounded to one decimal place, presented on a cash-free / debt-free Enterprise Value basis (no net-debt bridge to equity value), and do not constitute a fairness opinion or formal valuation. Peer multiples sourced from public FY2025 filings; transaction multiples from announced deal data. Prepared by atares for discussion purposes only.
     </div>
   </div>
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1304,&quot;height&quot;:1640},&quot;ebitda&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:2.62,&quot;min&quot;:1,&quot;max&quot;:6,&quot;step&quot;:0.01,&quot;unit&quot;:&quot;m&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Assumptions&quot;},&quot;companyWeight&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:50,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:5,&quot;unit&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Assumptions&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1304,&quot;height&quot;:1640},&quot;ebitda&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:2.62,&quot;min&quot;:1,&quot;max&quot;:6,&quot;step&quot;:0.01,&quot;unit&quot;:&quot;m&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Assumptions&quot;},&quot;revenue&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:15,&quot;min&quot;:5,&quot;max&quot;:60,&quot;step&quot;:0.5,&quot;unit&quot;:&quot;m&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Assumptions&quot;},&quot;companyWeight&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:50,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:5,&quot;unit&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Assumptions&quot;}}">
 class Component extends DCLogic {
-  state = { scenario: 'median', exComp: {}, exTxn: {}, sizeAdj: 0 };
+  state = { scenario: 'median', exComp: {}, exTxn: {}, sizeAdj: 0, basis: 'ebitda' };
+
+  setBasis(b){ this.setState({ basis: b }); }
 
   toggleComp(i){ this.setState(s => { const e = { ...s.exComp }; if(e[i]) delete e[i]; else e[i] = true; return { exComp: e }; }); }
   toggleTxn(i){ this.setState(s => { const e = { ...s.exTxn }; if(e[i]) delete e[i]; else e[i] = true; return { exTxn: e }; }); }
@@ -394,14 +436,14 @@ class Component extends DCLogic {
       ['Randstad','\ud83c\uddf3\ud83c\uddf1 NL',60315,26330.2,964.1,0.31,8.50,'https://randstad.com'],
       ['Adecco','\ud83c\udde8\ud83c\udded CH',205090,26507.9,931.4,0.30,8.53,'https://adecco.com'],
     ];
-    // [target, buyer, country, year, segment, EV/EBITDA, url, implied Revenue (US$m), implied EBITDA (US$m)]
+    // [target, buyer, country, year, segment, EV/EBITDA, url, implied Revenue (US$m), implied EBITDA (US$m), EV/Sales]
     const txnRaw = [
-      ['Metric Search','Southfield Capital','\ud83c\uddec\ud83c\udde7 GB',2026,'Executive search',12.0,'https://metric-search.com',37.0,8.3],
-      ['NetJobs Group','Lane Capital AB','\ud83c\uddf8\ud83c\uddea SE',2025,'Job board / recruiting',9.4,'https://www.netjobs.com',10.1,1.4],
-      ['gap personnel','Rcapital (PE)','\ud83c\uddec\ud83c\udde7 GB',2025,'Staffing agency',8.1,'https://www.gap-personnel.com',298.0,3.7],
-      ['Fruition Group','Erisbeg (PE)','\ud83c\uddec\ud83c\udde7 GB',2023,'IT recruitment',8.1,'https://www.fruitiongroup.com',27.5,2.0],
-      ['SD Worx','CVC (PE)','\ud83c\udde7\ud83c\uddea BE',2023,'HR software / services',18.7,'https://www.sdworx.com',347.7,104.1],
-      ['Broadbean','Veritone \u2190 CareerBuilder','\ud83c\uddfa\ud83c\uddf8 US',2023,'Recruiting tech',8.7,'https://www.broadbean.com',24.8,6.0],
+      ['Metric Search','Southfield Capital','\ud83c\uddec\ud83c\udde7 GB',2026,'Executive search',12.0,'https://metric-search.com',37.0,8.3,2.7],
+      ['NetJobs Group','Lane Capital AB','\ud83c\uddf8\ud83c\uddea SE',2025,'Job board / recruiting',9.4,'https://www.netjobs.com',10.1,1.4,1.3],
+      ['gap personnel','Rcapital (PE)','\ud83c\uddec\ud83c\udde7 GB',2025,'Staffing agency',8.1,'https://www.gap-personnel.com',298.0,3.7,0.1],
+      ['Fruition Group','Erisbeg (PE)','\ud83c\uddec\ud83c\udde7 GB',2023,'IT recruitment',8.1,'https://www.fruitiongroup.com',27.5,2.0,0.6],
+      ['SD Worx','CVC (PE)','\ud83c\udde7\ud83c\uddea BE',2023,'HR software / services',18.7,'https://www.sdworx.com',347.7,104.1,5.6],
+      ['Broadbean','Veritone \u2190 CareerBuilder','\ud83c\uddfa\ud83c\uddf8 US',2023,'Recruiting tech',8.7,'https://www.broadbean.com',24.8,6.0,2.1],
     ];
     const exComp = this.state.exComp, exTxn = this.state.exTxn;
     const sizeAdj = Number(this.state.sizeAdj || 0);   // % discount, e.g. 20 = -20%
@@ -412,10 +454,19 @@ class Component extends DCLogic {
     const bandLo = ebitda / BAND, bandHi = ebitda * BAND;
     const compOut = r => r[4] < bandLo || r[4] > bandHi;   // r[4] = company EBITDA ($m)
     const txnOut  = r => r[8] < bandLo || r[8] > bandHi;    // r[8] = implied EBITDA ($m)
-    const compSel = compRaw.filter((r,i) => !exComp[i]).map(r => r[6] * ((adjActive && compOut(r)) ? adjF : 1));
-    const txnSel  = txnRaw.filter((r,i) => !exTxn[i]).map(r => r[5] * ((adjActive && txnOut(r))  ? adjF : 1));
+    // Valuation multiple choice: EV/EBITDA (off EBITDA) or EV/Sales (off Revenue)
+    const useSales = (this.state.basis || 'ebitda') === 'sales';
+    const revenue = Number(this.props.revenue ?? 15);
+    const michelsBasis = useSales ? revenue : ebitda;
+    const compActive = r => useSales ? r[5] : r[6];   // r[5]=EV/Sales, r[6]=EV/EBITDA
+    const txnActive  = r => useSales ? r[9] : r[5];    // r[9]=EV/Sales, r[5]=EV/EBITDA
+    const compSel = compRaw.filter((r,i) => !exComp[i]).map(r => compActive(r) * ((adjActive && compOut(r)) ? adjF : 1));
+    const txnSel  = txnRaw.filter((r,i) => !exTxn[i]).map(r => txnActive(r) * ((adjActive && txnOut(r))  ? adjF : 1));
     const outN = compRaw.filter((r,i) => !exComp[i] && compOut(r)).length
                + txnRaw.filter((r,i) => !exTxn[i] && txnOut(r)).length;
+    const compColMax = Math.max(...compRaw.map(compActive));
+    const txnColMax  = Math.max(...txnRaw.map(txnActive));
+    const multName = useSales ? 'EV/Sales' : 'EV/EBITDA';
     const compStats = this.computeStats(compSel);
     const txnStats  = this.computeStats(txnSel);
     const compCount = compSel.length, txnCount = txnSel.length;
@@ -442,10 +493,10 @@ class Component extends DCLogic {
     const active = defs.find(d => d.key === scn);
 
     const compMult = multOf(compStats, scn), txnMult = multOf(txnStats, scn);
-    const compEV = ebitda * compMult, txnEV = ebitda * txnMult;
+    const compEV = michelsBasis * compMult, txnEV = michelsBasis * txnMult;
     const blendedEV = compEV * wComp + txnEV * (1 - wComp);
 
-    const blendAt = k => (multOf(compStats, k) * ebitda) * wComp + (multOf(txnStats, k) * ebitda) * (1 - wComp);
+    const blendAt = k => (multOf(compStats, k) * michelsBasis) * wComp + (multOf(txnStats, k) * michelsBasis) * (1 - wComp);
     const rangeLabel = this.fmtEUR(blendAt('low')) + '\u2013' + this.fmtEUR(blendAt('max'));
     const blendNote = (wComp === 0.5)
       ? 'equal-weighted'
@@ -453,24 +504,27 @@ class Component extends DCLogic {
 
     const minsX = [compStats, txnStats].filter(s => s.n > 0).map(s => s.min);
     const maxsX = [compStats, txnStats].filter(s => s.n > 0).map(s => s.max);
-    const allMin = (minsX.length ? Math.min(...minsX) : 6) * ebitda;
-    const allMax = (maxsX.length ? Math.max(...maxsX) : 20) * ebitda;
-    const axisMin = Math.floor((allMin - 2) / 2) * 2;
-    const axisMax = Math.ceil((allMax + 2) / 2) * 2;
+    const allMin = (minsX.length ? Math.min(...minsX) : 6) * michelsBasis;
+    const allMax = (maxsX.length ? Math.max(...maxsX) : 20) * michelsBasis;
+    const pad = (allMax - allMin) * 0.08 + 1;
+    const lo0 = Math.max(0, allMin - pad), hi0 = allMax + pad;
+    const niceSteps = [1,2,4,5,6,10,12,20,25,50,100];
+    const step = niceSteps.find(s => s >= (hi0 - lo0) / 8) || 100;
+    const axisMin = Math.max(0, Math.floor(lo0 / step) * step);
+    const axisMax = Math.ceil(hi0 / step) * step;
     const span = axisMax - axisMin;
     const frac = v => (v - axisMin) / span;
     const pctS = v => (frac(v) * 100).toFixed(2) + '%';
 
     const ticks = [];
-    const step = span > 30 ? 6 : span > 18 ? 4 : 2;
     for (let t = axisMin; t <= axisMax + 0.001; t += step) {
       ticks.push({ label: '\u20ac' + t + 'm', frac: frac(t).toFixed(4) });
     }
 
     const mkMethod = (name, stats, bandBg) => {
-      const minEV = stats.min * ebitda, maxEV = stats.max * ebitda;
-      const q1EV = stats.q1 * ebitda, q3EV = stats.q3 * ebitda, medEV = stats.med * ebitda;
-      const activeEV = multOf(stats, scn) * ebitda;
+      const minEV = stats.min * michelsBasis, maxEV = stats.max * michelsBasis;
+      const q1EV = stats.q1 * michelsBasis, q3EV = stats.q3 * michelsBasis, medEV = stats.med * michelsBasis;
+      const activeEV = multOf(stats, scn) * michelsBasis;
       return {
         name, bandBg,
         minLeft: pctS(minEV),
@@ -504,7 +558,7 @@ class Component extends DCLogic {
         return {
           stat: r.stat, tag: r.tag,
           x: this.fmtX(mult),
-          ev: this.fmtEUR(mult * ebitda),
+          ev: this.fmtEUR(mult * michelsBasis),
           labelColor: on ? col : '#9ca3af',
           cardStyle: `border-radius:10px;padding:16px 16px;transition:all .2s;`
             + (on
@@ -522,57 +576,63 @@ class Component extends DCLogic {
     const mkCheck = (on, col) => on
       ? `width:18px;height:18px;border-radius:5px;background:${col};border:1.5px solid ${col};display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;transition:all .15s;`
       : `width:18px;height:18px;border-radius:5px;background:#fff;border:1.5px solid #cbd5e1;cursor:pointer;flex:none;transition:all .15s;`;
+    const mkMult = (rawMult, isActive, rowAdj, isInc, hl, colMax, accent) => {
+      const adj = isActive && rowAdj;
+      const shown = adj ? rawMult * adjF : rawMult;
+      return {
+        active: isActive, adj,
+        num: this.fmtX(shown), raw: this.fmtX(rawMult),
+        barW: (Math.min(1, shown / colMax) * 100).toFixed(1) + '%',
+        barColor: !isInc ? '#e5e7eb' : (hl ? activeColor : accent),
+        color: !isInc ? '#c2c8d2' : (isActive ? (hl ? activeColor : '#1f2937') : '#b6bdc9'),
+        weight: isActive ? '700' : '500',
+      };
+    };
     const companies = compRaw.map((r, i) => {
-      const eeRaw = r[6];
       const inc = !exComp[i];
       const isOut = compOut(r);
       const rowAdj = adjActive && isOut;
-      const ee = rowAdj ? eeRaw * adjF : eeRaw;
       const inBand = inc && adjActive && !isOut;
+      const activeShown = (rowAdj ? compActive(r) * adjF : compActive(r));
       const near = multOf(compStats, scn);
-      const hl = inc && Math.abs(ee - near) < 0.06;
+      const hl = inc && Math.abs(activeShown - near) < 0.06;
       return {
         name:r[0], url:r[7], country:r[1], emp:fmtNum(r[2]), rev:fmtRev(r[3]),
-        ebitda:'$'+r[4].toFixed(1)+'m', evSales:r[5].toFixed(1)+'x',
+        ebitda:'$'+r[4].toFixed(1)+'m',
         ebStyle:`padding:10px;text-align:right;` + (!inc ? 'color:#c2c8d2;' : inBand ? 'color:#059669;font-weight:700;' : 'color:#6b7280;'),
-        evEbitda:this.fmtX(ee), evEbitdaRaw:this.fmtX(eeRaw), adjusted:rowAdj,
+        sCell: mkMult(r[5], useSales,  rowAdj, inc, useSales && hl,  compColMax, 'rgba(37,99,235,.40)'),
+        eCell: mkMult(r[6], !useSales, rowAdj, inc, !useSales && hl, compColMax, 'rgba(37,99,235,.40)'),
         included: inc,
         onToggle: () => this.toggleComp(i),
         checkStyle: mkCheck(inc, '#2563eb'),
         checkMark: inc ? '\u2713' : '',
         nameColor: inc ? '#1f2937' : '#9ca3af',
         cellColor: inc ? '#6b7280' : '#c2c8d2',
-        multColor: inc ? '#1f2937' : '#b6bdc9',
-        barPct:(ee/20*100).toFixed(1)+'%',
-        barColor: !inc ? '#e5e7eb' : hl ? activeColor : 'rgba(37,99,235,.40)',
         rowStyle:`border-bottom:1px solid #f3f4f6;transition:background .15s;`
           + (!inc ? `background:#fbfbfc;` : hl ? `background:${activeColor}0D;` : ''),
       };
     });
 
     const txns = txnRaw.map((r, i) => {
-      const eeRaw = r[5];
       const inc = !exTxn[i];
       const isOut = txnOut(r);
       const rowAdj = adjActive && isOut;
-      const ee = rowAdj ? eeRaw * adjF : eeRaw;
       const inBand = inc && adjActive && !isOut;
+      const activeShown = (rowAdj ? txnActive(r) * adjF : txnActive(r));
       const near = multOf(txnStats, scn);
-      const hl = inc && Math.abs(ee - near) < 0.06;
+      const hl = inc && Math.abs(activeShown - near) < 0.06;
       return {
         target:r[0], url:r[6], buyer:r[1], country:r[2], year:String(r[3]), segment:r[4],
         rev: fmtRev(r[7]), ebitda: '$' + r[8].toFixed(1) + 'm',
         ebStyle:`padding:10px;text-align:right;` + (!inc ? 'color:#c2c8d2;' : inBand ? 'color:#059669;font-weight:700;' : 'color:#6b7280;'),
-        evEbitda:this.fmtX(ee), evEbitdaRaw:this.fmtX(eeRaw), adjusted:rowAdj,
+        sCell: mkMult(r[9], useSales,  rowAdj, inc, useSales && hl,  txnColMax, 'rgba(16,185,129,.45)'),
+        eCell: mkMult(r[5], !useSales, rowAdj, inc, !useSales && hl, txnColMax, 'rgba(16,185,129,.45)'),
         included: inc,
         onToggle: () => this.toggleTxn(i),
         checkStyle: mkCheck(inc, '#10b981'),
         checkMark: inc ? '\u2713' : '',
         nameColor: inc ? '#1f2937' : '#9ca3af',
         cellColor: inc ? '#6b7280' : '#c2c8d2',
-        multColor: inc ? '#1f2937' : '#b6bdc9',
-        barPct:(ee/20*100).toFixed(1)+'%',
-        barColor: !inc ? '#e5e7eb' : hl ? activeColor : 'rgba(16,185,129,.45)',
         rowStyle:`border-bottom:1px solid #f3f4f6;transition:background .15s;`
           + (!inc ? `background:#fbfbfc;` : hl ? `background:${activeColor}0D;` : ''),
       };
@@ -583,17 +643,37 @@ class Component extends DCLogic {
       label: p === 0 ? 'No adjustment' : '\u2212' + p + '%',
     }));
 
+    const basisLabel = '\u20ac' + michelsBasis.toFixed(1) + 'm';
+    const multDefs = [
+      { key:'ebitda', label:'EV / EBITDA', sub:'Earnings multiple' },
+      { key:'sales',  label:'EV / Sales',  sub:'Revenue multiple' },
+    ];
+    const multToggle = multDefs.map(d => {
+      const on = (useSales ? 'sales' : 'ebitda') === d.key;
+      return {
+        label: d.label, sub: d.sub,
+        onClick: () => this.setBasis(d.key),
+        btnStyle: `cursor:pointer;border:none;border-radius:9px;padding:9px 18px;text-align:left;transition:all .2s;`
+          + (on ? `background:#fff;color:#0b1a38;box-shadow:0 4px 12px -4px rgba(0,0,0,.4);` : `background:transparent;color:#cdd9ee;`),
+      };
+    });
+
     return {
       scenarios, activeColor, activeColorLight,
       activeLabel: active.label,
+      multToggle, multName,
+      salesActive: useSales, ebitdaActive: !useSales,
+      basisName: useSales ? 'Revenue' : 'EBITDA',
+      basisRowName: useSales ? 'Basis \u00b7 FY2026E Revenue' : 'Basis \u00b7 FY2026E EBITDA',
+      basisIsEstimate: useSales,
       sizeAdjVal: String(sizeAdj),
       sizeOpts,
       onSizeAdj: (e) => this.setState({ sizeAdj: Number(e.target.value) }),
       adjActive,
       sizeAdjLabel: '\u2212' + sizeAdj + '% on ' + outN + ' size outlier' + (outN === 1 ? '' : 's'),
       bandHint: 'Applies only to comps outside \u2248' + bandLo.toFixed(1) + '\u2013' + bandHi.toFixed(1) + 'm EBITDA',
-      ebitdaLabel: '\u20ac' + ebitda.toFixed(1) + 'm',
-      ebitdaShort: '\u20ac' + ebitda.toFixed(1) + 'm',
+      ebitdaLabel: basisLabel,
+      ebitdaShort: basisLabel,
       blendedLabel: this.fmtEUR(blendedEV),
       blendedFrac: frac(blendedEV).toFixed(4),
       rangeLabel, blendNote,
