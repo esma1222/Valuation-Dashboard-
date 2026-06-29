@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:#013f62;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
+  .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;}
+  ::selection{background:#3b82f6;color:#fff;}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#013f62;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1f2937;padding:0 0 64px;">
+
+  <!-- TOP BAR -->
+  <div style="max-width:1240px;margin:0 auto;padding:26px 32px 0;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:baseline;gap:14px;">
+      <span style="font-weight:800;font-size:26px;letter-spacing:-1px;color:#fff;">atares</span>
+      <span style="font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#93c5fd;border-left:1px solid rgba(255,255,255,.25);padding-left:14px;">The digital M&amp;A manufactory</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.62);">
+      <span style="width:7px;height:7px;border-radius:50%;background:#3b82f6;display:inline-block;"></span>
+      Strictly Confidential · June 2026
+    </div>
+  </div>
+
+  <!-- TITLE -->
+  <div style="max-width:1240px;margin:0 auto;padding:30px 32px 22px;">
+    
+    <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#93c5fd;margin-bottom:10px;">Indicative Enterprise Valuation</div><h1 style="font-weight:800;font-size:42px;line-height:1.05;letter-spacing:-1.4px;margin:0 0 12px;color:#fff;max-width:840px;">Michelscom — Enterprise Value across scenarios</h1>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:rgba(255,255,255,.78);max-width:760px;">EV/EBITDA approach applied to FY2026E EBITDA, benchmarked against listed recruitment &amp; HR-services peers and recent precedent transactions. Toggle a scenario to flex the multiple from the lower quartile, through the median and upper quartile, to the maximum observed multiple.</p>
+  </div>
+
+  <!-- HERO PANEL -->
+  <div style="max-width:1240px;margin:0 auto;padding:0 32px;">
+    <div style="background:linear-gradient(135deg,#024d76 0%,#013f62 55%,#013a59 100%);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:34px 38px;box-shadow:0 22px 50px -26px rgba(0,0,0,.55);position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-70px;right:-50px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.30),transparent 68%);"></div>
+
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:28px;flex-wrap:wrap;position:relative;">
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:12px;">Select scenario</div>
+          <div style="display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:5px;gap:4px;">
+            <sc-for list="{{ scenarios }}" as="s" hint-placeholder-count="5">
+              <button onClick="{{ s.onClick }}" style="{{ s.btnStyle }}">
+                <span style="font-weight:700;font-size:15px;display:block;">{{ s.label }}</span>
+                <span style="font-size:10.5px;font-weight:600;letter-spacing:.03em;opacity:.82;">{{ s.sub }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="margin-top:20px;display:flex;align-items:center;gap:26px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55);">Basis · FY2026E EBITDA</span>
+              <span class="num" style="font-weight:700;font-size:15px;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:4px 11px;">{{ ebitdaLabel }}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55);">Size adjustment</span>
+              <select onChange="{{ onSizeAdj }}" value="{{ sizeAdjVal }}" style="font-family:inherit;font-weight:700;font-size:14px;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:6px 30px 6px 12px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%223%22><path d=%22M6 9l6 6 6-6%22/></svg>');background-repeat:no-repeat;background-position:right 10px center;">
+                <sc-for list="{{ sizeOpts }}" as="o" hint-placeholder-count="7">
+                  <option value="{{ o.value }}" style="color:#0b1a38;">{{ o.label }}</option>
+                </sc-for>
+              </select>
+            </div>
+          </div>
+          <sc-if value="{{ adjActive }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:10px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.5);">{{ bandHint }} — peers near Michelscom's size are kept unadjusted</div>
+          </sc-if>
+        </div>
+
+        <div style="text-align:right;min-width:280px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:6px;">Blended indicative EV — <span style="color:{{ activeColorLight }}">{{ activeLabel }} case</span></div>
+          <div class="num" style="font-weight:800;font-size:74px;line-height:.95;letter-spacing:-2.5px;color:#fff;">{{ blendedLabel }}</div>
+          <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.7);margin-top:8px;">Indicative range <span class="num" style="color:#fff;">{{ rangeLabel }}</span> · {{ blendNote }}</div>
+          <sc-if value="{{ adjActive }}" hint-placeholder-val="{{ false }}">
+            <div style="display:inline-flex;align-items:center;gap:6px;margin-top:12px;white-space:nowrap;font-size:11px;font-weight:800;letter-spacing:.04em;color:#fde68a;background:rgba(245,158,11,.16);border:1px solid rgba(245,158,11,.4);border-radius:20px;padding:4px 12px;">
+              <span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;flex:none;"></span>{{ sizeAdjLabel }}
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px;position:relative;">
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:20px 22px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <span style="font-weight:700;font-size:15px;color:#fff;">Comparable Companies</span>
+            <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.03em;">14 listed peers</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:14px;">
+            <div>
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">EV/EBITDA</div>
+              <div class="num" style="font-weight:700;font-size:30px;color:{{ activeColorLight }};">{{ comp.multLabel }}</div>
+            </div>
+            <div style="font-size:24px;color:rgba(255,255,255,.35);font-weight:300;">×</div>
+            <div>
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">EBITDA</div>
+              <div class="num" style="font-weight:700;font-size:30px;color:#fff;">{{ ebitdaShort }}</div>
+            </div>
+            <div style="font-size:24px;color:rgba(255,255,255,.35);font-weight:300;margin-left:2px;">=</div>
+            <div style="margin-left:auto;text-align:right;">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">Enterprise Value</div>
+              <div class="num" style="font-weight:800;font-size:30px;color:#fff;">{{ comp.evLabel }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:20px 22px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <span style="font-weight:700;font-size:15px;color:#fff;">Precedent Transactions</span>
+            <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.03em;">6 deals</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:14px;">
+            <div>
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">EV/EBITDA</div>
+              <div class="num" style="font-weight:700;font-size:30px;color:{{ activeColorLight }};">{{ txn.multLabel }}</div>
+            </div>
+            <div style="font-size:24px;color:rgba(255,255,255,.35);font-weight:300;">×</div>
+            <div>
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">EBITDA</div>
+              <div class="num" style="font-weight:700;font-size:30px;color:#fff;">{{ ebitdaShort }}</div>
+            </div>
+            <div style="font-size:24px;color:rgba(255,255,255,.35);font-weight:300;margin-left:2px;">=</div>
+            <div style="margin-left:auto;text-align:right;">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">Enterprise Value</div>
+              <div class="num" style="font-weight:800;font-size:30px;color:#fff;">{{ txn.evLabel }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTBALL FIELD -->
+  <div style="max-width:1240px;margin:0 auto;padding:0 32px;">
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:30px 36px 26px;margin-top:18px;box-shadow:0 12px 34px -20px rgba(0,0,0,.45);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:8px;">
+        <h2 style="font-weight:800;font-size:21px;letter-spacing:-.4px;margin:0;color:#1f2937;">Valuation range — implied Enterprise Value</h2>
+        <span style="font-size:13px;font-weight:600;color:#6b7280;">Box = Q1–Q3 · tick = median · whisker = min–max · dot = selected scenario</span>
+      </div>
+
+      <div style="position:relative;margin-top:60px;padding:0 6px;">
+        <div style="position:absolute;inset:0;">
+          <sc-for list="{{ ticks }}" as="t" hint-placeholder-count="7">
+            <div style="position:absolute;top:-8px;bottom:34px;width:1px;background:#e5e7eb;left:calc(160px + (100% - 160px) * {{ t.frac }});"></div>
+          </sc-for>
+        </div>
+
+        <div style="position:absolute;top:-18px;bottom:34px;width:2px;background:{{ activeColor }};left:calc(160px + (100% - 160px) * {{ blendedFrac }});transition:left .4s cubic-bezier(.4,0,.2,1),background .3s;box-shadow:0 0 0 4px rgba(37,99,235,.08);">
+          <div style="position:absolute;top:-26px;left:50%;transform:translateX(-50%);white-space:nowrap;background:{{ activeColor }};color:#fff;font-weight:700;font-size:12px;padding:3px 9px;border-radius:7px;transition:background .3s;">Blended {{ blendedLabel }}</div>
+        </div>
+
+        <sc-for list="{{ methods }}" as="m" hint-placeholder-count="2">
+          <div style="position:relative;height:54px;margin-bottom:6px;">
+            <div style="position:absolute;left:0;top:50%;transform:translateY(-50%);font-size:13px;font-weight:700;color:#1f2937;width:150px;">{{ m.name }}</div>
+            <div style="position:absolute;left:160px;right:0;top:0;bottom:0;">
+              <div style="position:absolute;top:50%;left:0;right:0;height:2px;background:#f3f4f6;transform:translateY(-50%);"></div>
+              <div style="position:absolute;top:50%;height:2px;background:#d1d5db;transform:translateY(-50%);left:{{ m.minLeft }};width:{{ m.whiskerWidth }};transition:left .4s,width .4s;"></div>
+              <div style="position:absolute;top:50%;height:12px;width:2px;background:#d1d5db;transform:translateY(-50%);left:{{ m.minLeft }};transition:left .4s;"></div>
+              <div style="position:absolute;top:50%;height:12px;width:2px;background:#d1d5db;transform:translateY(-50%);left:{{ m.maxLeft }};transition:left .4s;"></div>
+              <div style="position:absolute;top:50%;height:14px;transform:translateY(-50%);border-radius:8px;background:{{ m.bandBg }};left:{{ m.barLeft }};width:{{ m.barWidth }};transition:left .4s,width .4s;"></div>
+              <div style="position:absolute;top:50%;height:26px;width:2px;background:#1f2937;transform:translateY(-50%);left:{{ m.medLeft }};transition:left .4s;"></div>
+              <div style="position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:{{ activeColor }};border:3px solid #fff;transform:translate(-50%,-50%);left:{{ m.activeLeft }};transition:left .4s cubic-bezier(.4,0,.2,1),background .3s;box-shadow:0 2px 8px rgba(0,0,0,.22);z-index:2;"></div>
+              <div class="num" style="position:absolute;bottom:-6px;font-size:10.5px;font-weight:700;color:#9ca3af;left:{{ m.minLeft }};transform:translateX(-50%);">{{ m.minLabel }}</div>
+              <div class="num" style="position:absolute;bottom:-6px;font-size:10.5px;font-weight:700;color:#9ca3af;left:{{ m.maxLeft }};transform:translateX(-50%);">{{ m.maxLabel }}</div>
+            </div>
+          </div>
+        </sc-for>
+
+        <div style="position:relative;height:20px;margin-top:8px;border-top:1px solid #e5e7eb;padding-left:160px;">
+          <sc-for list="{{ ticks }}" as="t" hint-placeholder-count="7">
+            <div class="num" style="position:absolute;top:6px;font-size:11px;font-weight:600;color:#9ca3af;left:calc(160px + (100% - 160px) * {{ t.frac }});transform:translateX(-50%);">{{ t.label }}</div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARABLE COMPANIES -->
+  <div style="max-width:1240px;margin:0 auto;padding:0 32px;">
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:30px 36px;margin-top:18px;box-shadow:0 12px 34px -20px rgba(0,0,0,.45);">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:20px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#2563eb;margin-bottom:6px;">Method 1</div>
+          <h2 style="font-weight:800;font-size:21px;letter-spacing:-.4px;margin:0;color:#1f2937;">Comparable companies — 14 listed peers</h2>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:12.5px;font-weight:600;color:#6b7280;">EV/EBITDA range <span class="num" style="color:#1f2937;font-weight:700;">{{ comp.minLabel }}–{{ comp.maxLabel }}</span> · avg <span class="num" style="color:#1f2937;font-weight:700;">{{ comp.avgLabel }}</span></div>
+          <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:7px;">
+            <span style="font-size:11px;font-weight:700;letter-spacing:.04em;color:#2563eb;background:#eff6ff;border:1px solid #dbeafe;border-radius:20px;padding:3px 11px;">{{ comp.selLabel }}</span>
+            <sc-if value="{{ comp.someExcluded }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ comp.onReset }}" style="font-size:11px;font-weight:700;color:#6b7280;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;">Reset all</button>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;">
+        <sc-for list="{{ comp.cards }}" as="c" hint-placeholder-count="5">
+          <div style="{{ c.cardStyle }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:{{ c.labelColor }};">{{ c.stat }}</span>
+              <span style="{{ c.tagStyle }}">{{ c.tag }}</span>
+            </div>
+            <div class="num" style="font-weight:800;font-size:27px;letter-spacing:-.6px;color:#1f2937;line-height:1;">{{ c.x }}</div>
+            <div class="num" style="font-size:13px;font-weight:600;color:#6b7280;margin-top:6px;">→ EV {{ c.ev }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="text-align:left;color:#6b7280;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;width:34px;"></th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;">Company</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;">Country</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">Employees</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">Revenue</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">EBITDA</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">EV/Sales</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;width:200px;">EV/EBITDA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ companies }}" as="c" hint-placeholder-count="14">
+              <tr style="{{ c.rowStyle }}">
+                <td style="padding:10px;" onClick="{{ c.onToggle }}">
+                  <div style="{{ c.checkStyle }}"><span style="color:#fff;font-size:12px;font-weight:900;line-height:1;">{{ c.checkMark }}</span></div>
+                </td>
+                <td style="padding:10px;font-weight:700;"><a href="{{ c.url }}" target="_blank" rel="noopener noreferrer" style="color:{{ c.nameColor }};text-decoration:none;border-bottom:1px solid #cbd5e1;transition:color .15s,border-color .15s;" style-hover="color:#2563eb;border-bottom-color:#2563eb;">{{ c.name }}</a></td>
+                <td style="padding:10px;color:{{ c.cellColor }};">{{ c.country }}</td>
+                <td class="num" style="padding:10px;text-align:right;color:{{ c.cellColor }};">{{ c.emp }}</td>
+                <td class="num" style="padding:10px;text-align:right;color:{{ c.cellColor }};">{{ c.rev }}</td>
+                <td class="num" style="{{ c.ebStyle }}">{{ c.ebitda }}</td>
+                <td class="num" style="padding:10px;text-align:right;color:{{ c.cellColor }};">{{ c.evSales }}</td>
+                <td style="padding:10px;">
+                  <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;">
+                    <div style="flex:1;height:6px;background:#f3f4f6;border-radius:4px;position:relative;max-width:120px;">
+                      <div style="position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:{{ c.barColor }};width:{{ c.barPct }};"></div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;min-width:60px;">
+                      <span class="num" style="font-weight:700;color:{{ c.multColor }};">{{ c.evEbitda }}</span>
+                      <sc-if value="{{ c.adjusted }}" hint-placeholder-val="{{ false }}"><span class="num" style="font-size:10px;font-weight:600;color:#c2c8d2;text-decoration:line-through;">{{ c.evEbitdaRaw }}</span></sc-if>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRECEDENT TRANSACTIONS -->
+  <div style="max-width:1240px;margin:0 auto;padding:0 32px;">
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:30px 36px;margin-top:18px;box-shadow:0 12px 34px -20px rgba(0,0,0,.45);">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:20px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#2563eb;margin-bottom:6px;">Method 2</div>
+          <h2 style="font-weight:800;font-size:21px;letter-spacing:-.4px;margin:0;color:#1f2937;">Precedent transactions — 6 comparable deals</h2>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:12.5px;font-weight:600;color:#6b7280;">EV/EBITDA range <span class="num" style="color:#1f2937;font-weight:700;">{{ txn.minLabel }}–{{ txn.maxLabel }}</span> · avg <span class="num" style="color:#1f2937;font-weight:700;">{{ txn.avgLabel }}</span></div>
+          <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:7px;">
+            <span style="font-size:11px;font-weight:700;letter-spacing:.04em;color:#059669;background:#ecfdf5;border:1px solid #d1fae5;border-radius:20px;padding:3px 11px;">{{ txn.selLabel }}</span>
+            <sc-if value="{{ txn.someExcluded }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ txn.onReset }}" style="font-size:11px;font-weight:700;color:#6b7280;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;">Reset all</button>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;">
+        <sc-for list="{{ txn.cards }}" as="c" hint-placeholder-count="5">
+          <div style="{{ c.cardStyle }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:{{ c.labelColor }};">{{ c.stat }}</span>
+              <span style="{{ c.tagStyle }}">{{ c.tag }}</span>
+            </div>
+            <div class="num" style="font-weight:800;font-size:27px;letter-spacing:-.6px;color:#1f2937;line-height:1;">{{ c.x }}</div>
+            <div class="num" style="font-size:13px;font-weight:600;color:#6b7280;margin-top:6px;">→ EV {{ c.ev }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="text-align:left;color:#6b7280;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;width:34px;"></th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;">Target</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;">Buyer</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;">Country</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;">Year</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;">Segment</th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">Revenue<span style="color:#cbd5e1;">¹</span></th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">EBITDA<span style="color:#cbd5e1;">¹</span></th>
+              <th style="padding:9px 10px;border-bottom:1px solid #e5e7eb;text-align:right;width:180px;">EV/EBITDA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ txns }}" as="t" hint-placeholder-count="6">
+              <tr style="{{ t.rowStyle }}">
+                <td style="padding:10px;" onClick="{{ t.onToggle }}">
+                  <div style="{{ t.checkStyle }}"><span style="color:#fff;font-size:12px;font-weight:900;line-height:1;">{{ t.checkMark }}</span></div>
+                </td>
+                <td style="padding:10px;font-weight:700;"><a href="{{ t.url }}" target="_blank" rel="noopener noreferrer" style="color:{{ t.nameColor }};text-decoration:none;border-bottom:1px solid #cbd5e1;transition:color .15s,border-color .15s;" style-hover="color:#2563eb;border-bottom-color:#2563eb;">{{ t.target }}</a></td>
+                <td style="padding:10px;color:{{ t.cellColor }};">{{ t.buyer }}</td>
+                <td style="padding:10px;color:{{ t.cellColor }};">{{ t.country }}</td>
+                <td class="num" style="padding:10px;color:{{ t.cellColor }};">{{ t.year }}</td>
+                <td style="padding:10px;color:{{ t.cellColor }};">{{ t.segment }}</td>
+                <td class="num" style="padding:10px;text-align:right;color:{{ t.cellColor }};">{{ t.rev }}</td>
+                <td class="num" style="{{ t.ebStyle }}">{{ t.ebitda }}</td>
+                <td style="padding:10px;">
+                  <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;">
+                    <div style="flex:1;height:6px;background:#f3f4f6;border-radius:4px;position:relative;max-width:120px;">
+                      <div style="position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:{{ t.barColor }};width:{{ t.barPct }};"></div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;min-width:60px;">
+                      <span class="num" style="font-weight:700;color:{{ t.multColor }};">{{ t.evEbitda }}</span>
+                      <sc-if value="{{ t.adjusted }}" hint-placeholder-val="{{ false }}"><span class="num" style="font-size:10px;font-weight:600;color:#c2c8d2;text-decoration:line-through;">{{ t.evEbitdaRaw }}</span></sc-if>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin:18px 0 0;font-size:12px;line-height:1.6;color:#9ca3af;"><span style="color:#6b7280;">¹ Revenue and EBITDA are implied figures</span>, derived from the disclosed transaction value and the reported EV/Sales and EV/EBITDA multiples; targets' actual financials were not publicly disclosed. Closest strategic peers — HiOffice Group (DACH social recruiting), milch &amp; zucker and QAPA/Adecco — were screened but excluded from the multiple set as transaction multiples were not disclosed.</p>
+    </div>
+  </div>
+
+  <!-- METHODOLOGY -->
+  <div style="max-width:1240px;margin:0 auto;padding:0 32px;">
+    <div style="margin-top:22px;padding:20px 24px;border:1px dashed rgba(255,255,255,.24);border-radius:12px;font-size:12px;line-height:1.65;color:rgba(255,255,255,.7);">
+      <strong style="color:#fff;">Methodology &amp; disclaimer.</strong> Indicative Enterprise Value derived as FY2026E EBITDA of €2.6m multiplied by EV/EBITDA multiples observed across a screen of 14 listed recruitment &amp; HR-services peers and 6 precedent transactions. Scenarios are defined as: Low = lower quartile, Median &amp; Average = base case, Upside = midpoint of upper quartile and maximum, Max = highest observed multiple. An optional size adjustment discounts the multiples of size-outlier comps only — those whose EBITDA falls outside roughly one-third to three times Michelscom's — to better reflect the target's scale; peers of comparable size are left unadjusted. Quartiles are computed on the respective (adjusted) multiple sets; the blended figure equals the simple average of the two methods unless re-weighted. Figures are indicative, rounded to one decimal place, presented on a cash-free / debt-free Enterprise Value basis (no net-debt bridge to equity value), and do not constitute a fairness opinion or formal valuation. Peer multiples sourced from public FY2025 filings; transaction multiples from announced deal data. Prepared by atares for discussion purposes only.
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1304,&quot;height&quot;:1640},&quot;ebitda&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:2.62,&quot;min&quot;:1,&quot;max&quot;:6,&quot;step&quot;:0.01,&quot;unit&quot;:&quot;m&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Assumptions&quot;},&quot;companyWeight&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:50,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:5,&quot;unit&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Assumptions&quot;}}">
+class Component extends DCLogic {
+  state = { scenario: 'median', exComp: {}, exTxn: {}, sizeAdj: 0 };
+
+  toggleComp(i){ this.setState(s => { const e = { ...s.exComp }; if(e[i]) delete e[i]; else e[i] = true; return { exComp: e }; }); }
+  toggleTxn(i){ this.setState(s => { const e = { ...s.exTxn }; if(e[i]) delete e[i]; else e[i] = true; return { exTxn: e }; }); }
+  resetComp(){ this.setState({ exComp: {} }); }
+  resetTxn(){ this.setState({ exTxn: {} }); }
+
+  computeStats(mults){
+    const a = mults.slice().sort((x,y) => x - y);
+    const n = a.length;
+    if(n === 0) return { q1:0, med:0, q3:0, min:0, max:0, avg:0, n:0 };
+    const pct = p => { const r = p*(n-1), lo = Math.floor(r), hi = Math.ceil(r); return lo === hi ? a[lo] : a[lo] + (r-lo)*(a[hi]-a[lo]); };
+    return { q1:pct(0.25), med:pct(0.5), q3:pct(0.75), min:a[0], max:a[n-1], avg:a.reduce((s,x)=>s+x,0)/n, n };
+  }
+
+  fmtEUR(v){ return '\u20ac' + v.toFixed(1) + 'm'; }
+  fmtX(v){ return v.toFixed(1) + 'x'; }
+
+  renderVals(){
+    const ebitda = Number(this.props.ebitda ?? 2.62);
+    const wComp = Math.max(0, Math.min(100, Number(this.props.companyWeight ?? 50))) / 100;
+    const scn = this.state.scenario;
+    const COL  = { low:'#6b7280', median:'#2563eb', average:'#6366f1', upside:'#10b981', max:'#f59e0b' };
+    const COLL = { low:'#9ca3af', median:'#60a5fa', average:'#818cf8', upside:'#34d399', max:'#fbbf24' };
+    const STAT = { low:'q1', median:'med', average:'avg', upside:'upside', max:'max' };
+    const colorFor  = k => COL[k]  || COL.median;
+    const colorForL = k => COLL[k] || COLL.median;
+    const multOf = (stats, k) => STAT[k] === 'upside' ? (stats.q3 + stats.max) / 2 : stats[STAT[k]];
+    const activeColor = colorFor(scn);
+    const activeColorLight = colorForL(scn);
+
+    const compRaw = [
+      ['Grupa Pracuj','\ud83c\uddf5\ud83c\uddf1 PL',590,216.1,97.5,3.98,8.81,'https://pracujwgp.pl'],
+      ['Amadeus Fire','\ud83c\udde9\ud83c\uddea DE',1135,414.9,49.0,1.04,8.76,'https://amadeus-fire.de'],
+      ['Eezy Oyj','\ud83c\uddeb\ud83c\uddee FI',666,159.0,10.5,0.47,7.02,'https://eezy.fi'],
+      ['FDM Group','\ud83c\uddec\ud83c\udde7 UK',4145,234.9,24.2,0.74,7.18,'https://fdmgroup.com'],
+      ['Ogunsen AB','\ud83c\uddf8\ud83c\uddea SE',10,45.8,3.0,0.74,11.44,'https://ogunsen.se'],
+      ['PageGroup','\ud83c\uddec\ud83c\udde7 UK',2106,2110.4,103.3,0.52,10.70,'https://page.com'],
+      ['Robert Walters','\ud83c\uddec\ud83c\udde7 UK',4508,1032.5,10.6,0.17,16.41,'https://robertwalters.co.uk'],
+      ['Hays','\ud83c\uddec\ud83c\udde7 UK',31439,8733.4,103.4,0.19,16.35,'https://haysplc.com'],
+      ['Brunel','\ud83c\uddf3\ud83c\uddf1 NL',5307,1389.3,51.0,0.33,9.04,'https://brunel.net'],
+      ['NGS Group','\ud83c\uddf8\ud83c\uddea SE',368,29.3,0.4,0.28,18.78,'https://ngsgroup.se'],
+      ['PION Group','\ud83c\uddf8\ud83c\uddea SE',20,146.1,2.8,0.20,10.44,'https://piongroup.se'],
+      ['Ework Group','\ud83c\uddf8\ud83c\uddea SE',548,1420.2,19.3,0.13,9.57,'https://eworkgroup.com'],
+      ['Randstad','\ud83c\uddf3\ud83c\uddf1 NL',60315,26330.2,964.1,0.31,8.50,'https://randstad.com'],
+      ['Adecco','\ud83c\udde8\ud83c\udded CH',205090,26507.9,931.4,0.30,8.53,'https://adecco.com'],
+    ];
+    // [target, buyer, country, year, segment, EV/EBITDA, url, implied Revenue (US$m), implied EBITDA (US$m)]
+    const txnRaw = [
+      ['Metric Search','Southfield Capital','\ud83c\uddec\ud83c\udde7 GB',2026,'Executive search',12.0,'https://metric-search.com',37.0,8.3],
+      ['NetJobs Group','Lane Capital AB','\ud83c\uddf8\ud83c\uddea SE',2025,'Job board / recruiting',9.4,'https://www.netjobs.com',10.1,1.4],
+      ['gap personnel','Rcapital (PE)','\ud83c\uddec\ud83c\udde7 GB',2025,'Staffing agency',8.1,'https://www.gap-personnel.com',298.0,3.7],
+      ['Fruition Group','Erisbeg (PE)','\ud83c\uddec\ud83c\udde7 GB',2023,'IT recruitment',8.1,'https://www.fruitiongroup.com',27.5,2.0],
+      ['SD Worx','CVC (PE)','\ud83c\udde7\ud83c\uddea BE',2023,'HR software / services',18.7,'https://www.sdworx.com',347.7,104.1],
+      ['Broadbean','Veritone \u2190 CareerBuilder','\ud83c\uddfa\ud83c\uddf8 US',2023,'Recruiting tech',8.7,'https://www.broadbean.com',24.8,6.0],
+    ];
+    const exComp = this.state.exComp, exTxn = this.state.exTxn;
+    const sizeAdj = Number(this.state.sizeAdj || 0);   // % discount, e.g. 20 = -20%
+    const adjF = 1 - sizeAdj / 100;
+    const adjActive = sizeAdj > 0;
+    // Size-comparability band around Michelscom EBITDA (€2.6m): only size outliers get adjusted
+    const BAND = 3;
+    const bandLo = ebitda / BAND, bandHi = ebitda * BAND;
+    const compOut = r => r[4] < bandLo || r[4] > bandHi;   // r[4] = company EBITDA ($m)
+    const txnOut  = r => r[8] < bandLo || r[8] > bandHi;    // r[8] = implied EBITDA ($m)
+    const compSel = compRaw.filter((r,i) => !exComp[i]).map(r => r[6] * ((adjActive && compOut(r)) ? adjF : 1));
+    const txnSel  = txnRaw.filter((r,i) => !exTxn[i]).map(r => r[5] * ((adjActive && txnOut(r))  ? adjF : 1));
+    const outN = compRaw.filter((r,i) => !exComp[i] && compOut(r)).length
+               + txnRaw.filter((r,i) => !exTxn[i] && txnOut(r)).length;
+    const compStats = this.computeStats(compSel);
+    const txnStats  = this.computeStats(txnSel);
+    const compCount = compSel.length, txnCount = txnSel.length;
+
+    const defs = [
+      { key:'low',     label:'Low',     sub:'Lower quartile' },
+      { key:'median',  label:'Median',  sub:'Base case' },
+      { key:'average', label:'Average', sub:'Base case' },
+      { key:'upside',  label:'Upside',  sub:'High end' },
+      { key:'max',     label:'Max',     sub:'Maximum' },
+    ];
+    const scenarios = defs.map(d => {
+      const on = d.key === scn;
+      const col = colorFor(d.key);
+      return {
+        label: d.label, sub: d.sub,
+        onClick: () => this.setState({ scenario: d.key }),
+        btnStyle: `cursor:pointer;border:none;border-radius:8px;padding:9px 13px;text-align:left;transition:all .2s;`
+          + (on
+              ? `background:${col};color:#fff;box-shadow:0 4px 12px -4px ${col};`
+              : `background:transparent;color:#d1d5db;`),
+      };
+    });
+    const active = defs.find(d => d.key === scn);
+
+    const compMult = multOf(compStats, scn), txnMult = multOf(txnStats, scn);
+    const compEV = ebitda * compMult, txnEV = ebitda * txnMult;
+    const blendedEV = compEV * wComp + txnEV * (1 - wComp);
+
+    const blendAt = k => (multOf(compStats, k) * ebitda) * wComp + (multOf(txnStats, k) * ebitda) * (1 - wComp);
+    const rangeLabel = this.fmtEUR(blendAt('low')) + '\u2013' + this.fmtEUR(blendAt('max'));
+    const blendNote = (wComp === 0.5)
+      ? 'equal-weighted'
+      : Math.round(wComp*100) + '% companies / ' + Math.round((1-wComp)*100) + '% transactions';
+
+    const minsX = [compStats, txnStats].filter(s => s.n > 0).map(s => s.min);
+    const maxsX = [compStats, txnStats].filter(s => s.n > 0).map(s => s.max);
+    const allMin = (minsX.length ? Math.min(...minsX) : 6) * ebitda;
+    const allMax = (maxsX.length ? Math.max(...maxsX) : 20) * ebitda;
+    const axisMin = Math.floor((allMin - 2) / 2) * 2;
+    const axisMax = Math.ceil((allMax + 2) / 2) * 2;
+    const span = axisMax - axisMin;
+    const frac = v => (v - axisMin) / span;
+    const pctS = v => (frac(v) * 100).toFixed(2) + '%';
+
+    const ticks = [];
+    const step = span > 30 ? 6 : span > 18 ? 4 : 2;
+    for (let t = axisMin; t <= axisMax + 0.001; t += step) {
+      ticks.push({ label: '\u20ac' + t + 'm', frac: frac(t).toFixed(4) });
+    }
+
+    const mkMethod = (name, stats, bandBg) => {
+      const minEV = stats.min * ebitda, maxEV = stats.max * ebitda;
+      const q1EV = stats.q1 * ebitda, q3EV = stats.q3 * ebitda, medEV = stats.med * ebitda;
+      const activeEV = multOf(stats, scn) * ebitda;
+      return {
+        name, bandBg,
+        minLeft: pctS(minEV),
+        maxLeft: pctS(maxEV),
+        whiskerWidth: ((frac(maxEV) - frac(minEV)) * 100).toFixed(2) + '%',
+        barLeft: pctS(q1EV),
+        barWidth: ((frac(q3EV) - frac(q1EV)) * 100).toFixed(2) + '%',
+        medLeft: pctS(medEV),
+        activeLeft: pctS(activeEV),
+        minLabel: this.fmtEUR(minEV),
+        maxLabel: this.fmtEUR(maxEV),
+      };
+    };
+    const methods = [
+      mkMethod('Comparable Cos.', compStats, 'rgba(37,99,235,.16)'),
+      mkMethod('Precedent Txns.', txnStats,  'rgba(16,185,129,.16)'),
+    ];
+
+    const mkCards = (stats) => {
+      const rows = [
+        { stat:'Lower quartile', tag:'Q1',   k:'low' },
+        { stat:'Median',         tag:'Med',  k:'median' },
+        { stat:'Average',        tag:'Mean', k:'average' },
+        { stat:'Upside',         tag:'High', k:'upside' },
+        { stat:'Maximum',        tag:'Max',  k:'max' },
+      ];
+      return rows.map(r => {
+        const on = r.k === scn;
+        const col = colorFor(r.k);
+        const mult = multOf(stats, r.k);
+        return {
+          stat: r.stat, tag: r.tag,
+          x: this.fmtX(mult),
+          ev: this.fmtEUR(mult * ebitda),
+          labelColor: on ? col : '#9ca3af',
+          cardStyle: `border-radius:10px;padding:16px 16px;transition:all .2s;`
+            + (on
+                ? `background:${col}14;border:1.5px solid ${col};box-shadow:0 8px 20px -14px ${col};`
+                : `background:#f9fafb;border:1.5px solid #e5e7eb;`),
+          tagStyle: on
+            ? `font-size:10px;font-weight:800;letter-spacing:.05em;color:#fff;background:${col};padding:2px 9px;border-radius:20px;`
+            : `font-size:10px;font-weight:800;letter-spacing:.05em;color:#6b7280;background:#e5e7eb;padding:2px 9px;border-radius:20px;`,
+        };
+      });
+    };
+
+    const fmtNum = n => n >= 1000 ? n.toLocaleString('en-US') : String(n);
+    const fmtRev = n => n >= 1000 ? '$' + (n/1000).toFixed(1) + 'bn' : '$' + n.toFixed(1) + 'm';
+    const mkCheck = (on, col) => on
+      ? `width:18px;height:18px;border-radius:5px;background:${col};border:1.5px solid ${col};display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;transition:all .15s;`
+      : `width:18px;height:18px;border-radius:5px;background:#fff;border:1.5px solid #cbd5e1;cursor:pointer;flex:none;transition:all .15s;`;
+    const companies = compRaw.map((r, i) => {
+      const eeRaw = r[6];
+      const inc = !exComp[i];
+      const isOut = compOut(r);
+      const rowAdj = adjActive && isOut;
+      const ee = rowAdj ? eeRaw * adjF : eeRaw;
+      const inBand = inc && adjActive && !isOut;
+      const near = multOf(compStats, scn);
+      const hl = inc && Math.abs(ee - near) < 0.06;
+      return {
+        name:r[0], url:r[7], country:r[1], emp:fmtNum(r[2]), rev:fmtRev(r[3]),
+        ebitda:'$'+r[4].toFixed(1)+'m', evSales:r[5].toFixed(1)+'x',
+        ebStyle:`padding:10px;text-align:right;` + (!inc ? 'color:#c2c8d2;' : inBand ? 'color:#059669;font-weight:700;' : 'color:#6b7280;'),
+        evEbitda:this.fmtX(ee), evEbitdaRaw:this.fmtX(eeRaw), adjusted:rowAdj,
+        included: inc,
+        onToggle: () => this.toggleComp(i),
+        checkStyle: mkCheck(inc, '#2563eb'),
+        checkMark: inc ? '\u2713' : '',
+        nameColor: inc ? '#1f2937' : '#9ca3af',
+        cellColor: inc ? '#6b7280' : '#c2c8d2',
+        multColor: inc ? '#1f2937' : '#b6bdc9',
+        barPct:(ee/20*100).toFixed(1)+'%',
+        barColor: !inc ? '#e5e7eb' : hl ? activeColor : 'rgba(37,99,235,.40)',
+        rowStyle:`border-bottom:1px solid #f3f4f6;transition:background .15s;`
+          + (!inc ? `background:#fbfbfc;` : hl ? `background:${activeColor}0D;` : ''),
+      };
+    });
+
+    const txns = txnRaw.map((r, i) => {
+      const eeRaw = r[5];
+      const inc = !exTxn[i];
+      const isOut = txnOut(r);
+      const rowAdj = adjActive && isOut;
+      const ee = rowAdj ? eeRaw * adjF : eeRaw;
+      const inBand = inc && adjActive && !isOut;
+      const near = multOf(txnStats, scn);
+      const hl = inc && Math.abs(ee - near) < 0.06;
+      return {
+        target:r[0], url:r[6], buyer:r[1], country:r[2], year:String(r[3]), segment:r[4],
+        rev: fmtRev(r[7]), ebitda: '$' + r[8].toFixed(1) + 'm',
+        ebStyle:`padding:10px;text-align:right;` + (!inc ? 'color:#c2c8d2;' : inBand ? 'color:#059669;font-weight:700;' : 'color:#6b7280;'),
+        evEbitda:this.fmtX(ee), evEbitdaRaw:this.fmtX(eeRaw), adjusted:rowAdj,
+        included: inc,
+        onToggle: () => this.toggleTxn(i),
+        checkStyle: mkCheck(inc, '#10b981'),
+        checkMark: inc ? '\u2713' : '',
+        nameColor: inc ? '#1f2937' : '#9ca3af',
+        cellColor: inc ? '#6b7280' : '#c2c8d2',
+        multColor: inc ? '#1f2937' : '#b6bdc9',
+        barPct:(ee/20*100).toFixed(1)+'%',
+        barColor: !inc ? '#e5e7eb' : hl ? activeColor : 'rgba(16,185,129,.45)',
+        rowStyle:`border-bottom:1px solid #f3f4f6;transition:background .15s;`
+          + (!inc ? `background:#fbfbfc;` : hl ? `background:${activeColor}0D;` : ''),
+      };
+    });
+
+    const sizeOpts = [0,5,10,15,20,25,30].map(p => ({
+      value: String(p),
+      label: p === 0 ? 'No adjustment' : '\u2212' + p + '%',
+    }));
+
+    return {
+      scenarios, activeColor, activeColorLight,
+      activeLabel: active.label,
+      sizeAdjVal: String(sizeAdj),
+      sizeOpts,
+      onSizeAdj: (e) => this.setState({ sizeAdj: Number(e.target.value) }),
+      adjActive,
+      sizeAdjLabel: '\u2212' + sizeAdj + '% on ' + outN + ' size outlier' + (outN === 1 ? '' : 's'),
+      bandHint: 'Applies only to comps outside \u2248' + bandLo.toFixed(1) + '\u2013' + bandHi.toFixed(1) + 'm EBITDA',
+      ebitdaLabel: '\u20ac' + ebitda.toFixed(1) + 'm',
+      ebitdaShort: '\u20ac' + ebitda.toFixed(1) + 'm',
+      blendedLabel: this.fmtEUR(blendedEV),
+      blendedFrac: frac(blendedEV).toFixed(4),
+      rangeLabel, blendNote,
+      comp: {
+        multLabel:this.fmtX(compMult), evLabel:this.fmtEUR(compEV),
+        minLabel:this.fmtX(compStats.min), maxLabel:this.fmtX(compStats.max), avgLabel:this.fmtX(compStats.avg),
+        cards: mkCards(compStats),
+        count: compCount, total: compRaw.length,
+        selLabel: compCount + ' of ' + compRaw.length + ' included',
+        someExcluded: compCount !== compRaw.length,
+        onReset: () => this.resetComp(),
+      },
+      txn: {
+        multLabel:this.fmtX(txnMult), evLabel:this.fmtEUR(txnEV),
+        minLabel:this.fmtX(txnStats.min), maxLabel:this.fmtX(txnStats.max), avgLabel:this.fmtX(txnStats.avg),
+        cards: mkCards(txnStats),
+        count: txnCount, total: txnRaw.length,
+        selLabel: txnCount + ' of ' + txnRaw.length + ' included',
+        someExcluded: txnCount !== txnRaw.length,
+        onReset: () => this.resetTxn(),
+      },
+      methods, ticks, companies, txns,
+    };
+  }
+}
+</script>
+</body>
+</html>
