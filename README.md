@@ -83,6 +83,15 @@ Cloudflare Pages, GitHub Pages, S3, …). Set the two `VITE_SUPABASE_*` environm
 variables in your host's build settings if you want to override the baked-in
 defaults.
 
+### Vercel
+
+This repo is wired for [Vercel](https://vercel.com). A `vercel.json` pins the
+Vite framework preset, `npm run build`, and the `dist/` output directory, so a
+push to the connected project builds and deploys automatically. No environment
+variables are required (the publishable Supabase credentials are baked in); add
+`VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` in the Vercel project
+settings only if you want to point it at a different Supabase project.
+
 ## Database
 
 The live schema and seed data are reproduced under `supabase/migrations/`. The data
