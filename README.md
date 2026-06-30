@@ -17,10 +17,13 @@ database and the UI computes the valuation from them.
 - A **blended indicative EV** that flexes across five scenarios (Low / Median /
   Average / Upside / Max), driven by quartile statistics of the observed multiples.
 - A **football-field** chart of the implied EV range for each method.
-- Sortable tables of **14 listed comparable companies** and **6 precedent
+- Sortable tables of **16 listed comparable companies** and **8 precedent
   transactions** — each shows both EV/Sales and EV/EBITDA (the active multiple is
   highlighted), each row can be toggled in/out of the multiple set, and an optional
   **size adjustment** discounts the multiples of size-outlier peers only.
+
+Styled to the **atares** brand identity (Jost display type, dark-blue/teal palette,
+logo lockup).
 
 All figures are indicative, on a cash-free / debt-free basis, and do not
 constitute a fairness opinion or formal valuation.
@@ -103,8 +106,8 @@ model:
 
 | Table | Rows | Purpose |
 | --- | --- | --- |
-| `comparable_companies` | 21 (14 core `is_main`) | Listed peers — financials & EV multiples |
-| `precedent_transactions` | 13 (6 core `is_main`) | Recent M&A deals — EV multiples & relevance notes |
+| `comparable_companies` | 24 (16 core `is_main`) | Listed peers — financials & EV multiples |
+| `precedent_transactions` | 15 (8 core `is_main`) | Recent M&A deals — EV multiples & relevance notes |
 | `valuation_assumptions` | 1 | Subject company, FY2026E EBITDA (€2.6m) and revenue (€7m) bases, method weighting, methodology text |
 
 The dashboard reads only the `is_main = true` rows for its core valuation; the

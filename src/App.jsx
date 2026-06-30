@@ -3,7 +3,7 @@ import { loadValuationData } from './lib/supabase'
 import { buildView } from './lib/valuation'
 import { css } from './lib/css'
 
-const PAGE_BG = '#013f62'
+const PAGE_BG = '#003E5F'
 
 export default function App() {
   const [data, setData] = useState(null)
@@ -44,27 +44,31 @@ export default function App() {
     <div style={{ minHeight: '100vh', background: PAGE_BG, fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif", color: '#1f2937', padding: '0 0 64px' }}>
       {/* TOP BAR */}
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '26px 32px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 14 }}>
-          <span style={{ fontWeight: 800, fontSize: 26, letterSpacing: '-1px', color: '#fff' }}>atares</span>
-          <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.16em', textTransform: 'uppercase', color: '#93c5fd', borderLeft: '1px solid rgba(255,255,255,.25)', paddingLeft: 14 }}>The digital M&amp;A manufactory</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 13 }}>
+          <img src="/assets/atares-logo-white.png" alt="atares" style={{ height: 48, width: 'auto', display: 'block' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+            <span className="brand" style={{ fontWeight: 300, fontSize: 31, letterSpacing: '.05em', color: '#fff' }}>atares</span>
+            <span style={{ fontSize: 9.5, fontWeight: 500, letterSpacing: '.36em', color: '#98A6AE', marginTop: 5, paddingLeft: 2 }}>merging visions</span>
+          </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 11, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.62)' }}>
-          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#3b82f6', display: 'inline-block' }} />
+          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#00C3BF', display: 'inline-block' }} />
           Strictly Confidential{asOf ? ` · ${asOf}` : ''}
         </div>
       </div>
 
       {/* TITLE */}
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '30px 32px 22px' }}>
-        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.18em', textTransform: 'uppercase', color: '#93c5fd', marginBottom: 10 }}>Indicative Enterprise Valuation</div>
-        <h1 style={{ fontWeight: 800, fontSize: 42, lineHeight: 1.05, letterSpacing: '-1.4px', margin: '0 0 12px', color: '#fff', maxWidth: 840 }}>{data.assumptions?.subject_company || 'Michelscom'} — Enterprise Value across scenarios</h1>
+        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.18em', textTransform: 'uppercase', color: '#98A6AE', marginBottom: 12 }}>Indicative Enterprise Valuation</div>
+        <h1 className="brand" style={{ fontWeight: 400, fontSize: 46, lineHeight: 1.08, letterSpacing: '-.3px', margin: '0 0 14px', color: '#fff', maxWidth: 880 }}>{data.assumptions?.subject_company || 'Michelscom'} — Enterprise Value across scenarios</h1>
         <p style={{ margin: 0, fontSize: 16, lineHeight: 1.55, color: 'rgba(255,255,255,.78)', maxWidth: 760 }}>EV/EBITDA and EV/Sales approaches applied to FY2026E figures, benchmarked against listed recruitment &amp; HR-services peers and recent precedent transactions. Choose a valuation multiple, then flex the scenario from the lower quartile, through the median and upper quartile, to the maximum observed multiple.</p>
       </div>
 
       {/* HERO PANEL */}
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 32px' }}>
-        <div style={{ background: 'linear-gradient(135deg,#024d76 0%,#013f62 55%,#013a59 100%)', border: '1px solid rgba(255,255,255,.14)', borderRadius: 14, padding: '34px 38px', boxShadow: '0 22px 50px -26px rgba(0,0,0,.55)', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: -70, right: -50, width: 340, height: 340, borderRadius: '50%', background: 'radial-gradient(circle,rgba(59,130,246,.30),transparent 68%)' }} />
+        <div style={{ background: 'linear-gradient(135deg,#00567F 0%,#003E5F 55%,#00263B 100%)', border: '1px solid rgba(255,255,255,.13)', borderRadius: 14, padding: '34px 38px', boxShadow: '0 22px 50px -26px rgba(0,0,0,.55)', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: -70, right: -50, width: 360, height: 360, borderRadius: '50%', background: 'radial-gradient(circle,rgba(0,195,191,.22),transparent 68%)' }} />
+          <img src="/assets/atares-logo-white.png" alt="" aria-hidden="true" style={{ position: 'absolute', bottom: -40, right: 18, width: 230, height: 'auto', opacity: 0.06, pointerEvents: 'none' }} />
 
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 28, flexWrap: 'wrap', position: 'relative' }}>
             <div>
@@ -117,8 +121,8 @@ export default function App() {
               <div className="num" style={{ fontWeight: 800, fontSize: 74, lineHeight: 0.95, letterSpacing: '-2.5px', color: '#fff' }}>{v.blendedLabel}</div>
               <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,.7)', marginTop: 8 }}>Indicative range <span className="num" style={{ color: '#fff' }}>{v.rangeLabel}</span> · {v.blendNote}</div>
               {v.adjActive && (
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 12, whiteSpace: 'nowrap', fontSize: 11, fontWeight: 800, letterSpacing: '.04em', color: '#fde68a', background: 'rgba(245,158,11,.16)', border: '1px solid rgba(245,158,11,.4)', borderRadius: 20, padding: '4px 12px' }}>
-                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b', flex: 'none' }} />{v.sizeAdjLabel}
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 12, whiteSpace: 'nowrap', fontSize: 11, fontWeight: 800, letterSpacing: '.04em', color: '#FBC4BB', background: 'rgba(243,72,50,.15)', border: '1px solid rgba(243,72,50,.42)', borderRadius: 20, padding: '4px 12px' }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#F34832', flex: 'none' }} />{v.sizeAdjLabel}
                 </div>
               )}
             </div>
@@ -134,7 +138,7 @@ export default function App() {
       {/* FOOTBALL FIELD */}
       <Panel light>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 6, flexWrap: 'wrap', gap: 8 }}>
-          <h2 style={{ fontWeight: 800, fontSize: 21, letterSpacing: '-.4px', margin: 0, color: '#1f2937' }}>Valuation range — implied Enterprise Value</h2>
+          <h2 className="brand" style={{ fontWeight: 500, fontSize: 23, letterSpacing: '-.2px', margin: 0, color: '#003E5F' }}>Valuation range — implied Enterprise Value</h2>
           <span style={{ fontSize: 13, fontWeight: 600, color: '#6b7280' }}>Box = Q1–Q3 · tick = median · whisker = min–max · dot = selected scenario</span>
         </div>
 
@@ -145,7 +149,7 @@ export default function App() {
             ))}
           </div>
 
-          <div style={{ position: 'absolute', top: -18, bottom: 34, width: 2, background: v.activeColor, left: `calc(160px + (100% - 160px) * ${v.blendedFrac})`, transition: 'left .4s cubic-bezier(.4,0,.2,1),background .3s', boxShadow: '0 0 0 4px rgba(37,99,235,.08)' }}>
+          <div style={{ position: 'absolute', top: -18, bottom: 34, width: 2, background: v.activeColor, left: `calc(160px + (100% - 160px) * ${v.blendedFrac})`, transition: 'left .4s cubic-bezier(.4,0,.2,1),background .3s', boxShadow: '0 0 0 4px rgba(0,195,191,.14)' }}>
             <div style={{ position: 'absolute', top: -26, left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap', background: v.activeColor, color: '#fff', fontWeight: 700, fontSize: 12, padding: '3px 9px', borderRadius: 7, transition: 'background .3s' }}>Blended {v.blendedLabel}</div>
           </div>
 
@@ -188,8 +192,8 @@ export default function App() {
                 <th style={th(null, 'right')}>Employees</th>
                 <th style={th(null, 'right')}>Revenue</th>
                 <th style={th(null, 'right')}>EBITDA</th>
-                <th style={th(150, 'right')}>EV/Sales {v.salesActive && <span style={{ color: '#2563eb' }}>●</span>}</th>
-                <th style={th(150, 'right')}>EV/EBITDA {v.ebitdaActive && <span style={{ color: '#2563eb' }}>●</span>}</th>
+                <th style={th(150, 'right')}>EV/Sales {v.salesActive && <span style={{ color: '#007775' }}>●</span>}</th>
+                <th style={th(150, 'right')}>EV/EBITDA {v.ebitdaActive && <span style={{ color: '#007775' }}>●</span>}</th>
               </tr>
             </thead>
             <tbody>
@@ -214,7 +218,7 @@ export default function App() {
 
       {/* PRECEDENT TRANSACTIONS */}
       <Panel light>
-        <SectionHead method="Method 2" methodColor="#10b981" title={`Precedent transactions — ${v.txn.total} deals`} multName={v.multName} rangeLabel={`${v.txn.minLabel}–${v.txn.maxLabel}`} avgLabel={v.txn.avgLabel} selLabel={v.txn.selLabel} someExcluded={v.txn.someExcluded} onReset={() => setExTxn({})} accent="#10b981" />
+        <SectionHead method="Method 2" title={`Precedent transactions — ${v.txn.total} comparable deals`} multName={v.multName} rangeLabel={`${v.txn.minLabel}–${v.txn.maxLabel}`} avgLabel={v.txn.avgLabel} selLabel={v.txn.selLabel} someExcluded={v.txn.someExcluded} onReset={() => setExTxn({})} />
         <CardGrid cards={v.txn.cards} />
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
@@ -228,8 +232,8 @@ export default function App() {
                 <th style={th()}>Segment</th>
                 <th style={th(null, 'right')}>Revenue<span style={{ color: '#cbd5e1' }}>¹</span></th>
                 <th style={th(null, 'right')}>EBITDA<span style={{ color: '#cbd5e1' }}>¹</span></th>
-                <th style={th(140, 'right')}>EV/Sales {v.salesActive && <span style={{ color: '#10b981' }}>●</span>}</th>
-                <th style={th(140, 'right')}>EV/EBITDA {v.ebitdaActive && <span style={{ color: '#10b981' }}>●</span>}</th>
+                <th style={th(140, 'right')}>EV/Sales {v.salesActive && <span style={{ color: '#007775' }}>●</span>}</th>
+                <th style={th(140, 'right')}>EV/EBITDA {v.ebitdaActive && <span style={{ color: '#007775' }}>●</span>}</th>
               </tr>
             </thead>
             <tbody>
@@ -316,17 +320,17 @@ function HeroMethod({ title, countLabel, multName, basisName, mult, ebitda, ev, 
   )
 }
 
-function SectionHead({ method, methodColor = '#2563eb', title, multName, rangeLabel, avgLabel, selLabel, someExcluded, onReset, accent = '#2563eb' }) {
+function SectionHead({ method, methodColor = '#007775', title, multName, rangeLabel, avgLabel, selLabel, someExcluded, onReset }) {
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, marginBottom: 20 }}>
       <div>
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: methodColor, marginBottom: 6 }}>{method}</div>
-        <h2 style={{ fontWeight: 800, fontSize: 21, letterSpacing: '-.4px', margin: 0, color: '#1f2937' }}>{title}</h2>
+        <h2 className="brand" style={{ fontWeight: 500, fontSize: 23, letterSpacing: '-.2px', margin: 0, color: '#003E5F' }}>{title}</h2>
       </div>
       <div style={{ textAlign: 'right' }}>
         <div style={{ fontSize: 12.5, fontWeight: 600, color: '#6b7280' }}>{multName} range <span className="num" style={{ color: '#1f2937', fontWeight: 700 }}>{rangeLabel}</span> · avg <span className="num" style={{ color: '#1f2937', fontWeight: 700 }}>{avgLabel}</span></div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10, marginTop: 7 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.04em', color: accent, background: accent === '#10b981' ? '#ecfdf5' : '#eff6ff', border: `1px solid ${accent === '#10b981' ? '#d1fae5' : '#dbeafe'}`, borderRadius: 20, padding: '3px 11px' }}>{selLabel}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.04em', color: '#007775', background: '#e6f6f5', border: '1px solid #c9ebe9', borderRadius: 20, padding: '3px 11px' }}>{selLabel}</span>
           {someExcluded && (
             <button onClick={onReset} style={{ fontSize: 11, fontWeight: 700, color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>Reset all</button>
           )}

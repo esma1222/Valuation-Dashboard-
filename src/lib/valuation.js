@@ -8,8 +8,9 @@
 //   • EV/Sales   — applied to a FY2026E revenue estimate
 // The `basis` state toggles which one drives the headline figures.
 
-const COL = { low: '#6b7280', median: '#2563eb', average: '#6366f1', upside: '#10b981', max: '#f59e0b' }
-const COLL = { low: '#9ca3af', median: '#60a5fa', average: '#818cf8', upside: '#34d399', max: '#fbbf24' }
+// atares brand palette
+const COL = { low: '#98A6AE', median: '#00C3BF', average: '#007775', upside: '#00B167', max: '#F34832' }
+const COLL = { low: '#B9C3C9', median: '#5FD6D2', average: '#4FA6A3', upside: '#46C68C', max: '#F87A6A' }
 const STAT = { low: 'q1', median: 'med', average: 'avg', upside: 'upside', max: 'max' }
 
 export const colorFor = (k) => COL[k] || COL.median
@@ -86,7 +87,7 @@ const toTxn = (r) => ({
 
 export function buildView(data, state) {
   const ebitda = Number(data.assumptions?.ebitda_fy2026e ?? 2.62)
-  const revenue = Number(data.assumptions?.revenue_fy2026e ?? 15)
+  const revenue = Number(data.assumptions?.revenue_fy2026e ?? 7)
   const wComp = Math.max(0, Math.min(100, Number(data.assumptions?.company_weight ?? 50))) / 100
   const scn = state.scenario
   const activeColor = colorFor(scn)
@@ -194,8 +195,8 @@ export function buildView(data, state) {
     }
   }
   const methods = [
-    mkMethod('Comparable Cos.', compStats, 'rgba(37,99,235,.16)'),
-    mkMethod('Precedent Txns.', txnStats, 'rgba(16,185,129,.16)'),
+    mkMethod('Comparable Cos.', compStats, 'rgba(0,195,191,.20)'),
+    mkMethod('Precedent Txns.', txnStats, 'rgba(0,119,117,.20)'),
   ]
 
   const mkCards = (stats) =>
@@ -249,11 +250,11 @@ export function buildView(data, state) {
       i,
       name: r.name, url: r.url, country: r.country, emp: fmtNum(r.emp), rev: fmtRev(r.rev),
       ebitda: '$' + r.ebitda.toFixed(1) + 'm',
-      ebStyle: `padding:10px;text-align:right;` + (!inc ? 'color:#c2c8d2;' : inBand ? 'color:#059669;font-weight:700;' : 'color:#6b7280;'),
-      sCell: mkMult(r.evSales, useSales, rowAdj, inc, useSales && hl, compColMax, 'rgba(37,99,235,.40)'),
-      eCell: mkMult(r.evEbitda, !useSales, rowAdj, inc, !useSales && hl, compColMax, 'rgba(37,99,235,.40)'),
+      ebStyle: `padding:10px;text-align:right;` + (!inc ? 'color:#c2c8d2;' : inBand ? 'color:#00B167;font-weight:700;' : 'color:#6b7280;'),
+      sCell: mkMult(r.evSales, useSales, rowAdj, inc, useSales && hl, compColMax, 'rgba(0,195,191,.50)'),
+      eCell: mkMult(r.evEbitda, !useSales, rowAdj, inc, !useSales && hl, compColMax, 'rgba(0,195,191,.50)'),
       included: inc,
-      checkStyle: mkCheck(inc, '#2563eb'),
+      checkStyle: mkCheck(inc, '#00C3BF'),
       checkMark: inc ? '✓' : '',
       nameColor: inc ? '#1f2937' : '#9ca3af',
       cellColor: inc ? '#6b7280' : '#c2c8d2',
@@ -273,11 +274,11 @@ export function buildView(data, state) {
       i,
       target: r.target, url: r.url, buyer: r.buyer, country: r.country, year: String(r.year), segment: r.segment,
       rev: fmtRev(r.impliedRev), ebitda: '$' + r.impliedEbitda.toFixed(1) + 'm',
-      ebStyle: `padding:10px;text-align:right;` + (!inc ? 'color:#c2c8d2;' : inBand ? 'color:#059669;font-weight:700;' : 'color:#6b7280;'),
-      sCell: mkMult(r.evSales, useSales, rowAdj, inc, useSales && hl, txnColMax, 'rgba(16,185,129,.45)'),
-      eCell: mkMult(r.evEbitda, !useSales, rowAdj, inc, !useSales && hl, txnColMax, 'rgba(16,185,129,.45)'),
+      ebStyle: `padding:10px;text-align:right;` + (!inc ? 'color:#c2c8d2;' : inBand ? 'color:#00B167;font-weight:700;' : 'color:#6b7280;'),
+      sCell: mkMult(r.evSales, useSales, rowAdj, inc, useSales && hl, txnColMax, 'rgba(0,119,117,.52)'),
+      eCell: mkMult(r.evEbitda, !useSales, rowAdj, inc, !useSales && hl, txnColMax, 'rgba(0,119,117,.52)'),
       included: inc,
-      checkStyle: mkCheck(inc, '#10b981'),
+      checkStyle: mkCheck(inc, '#007775'),
       checkMark: inc ? '✓' : '',
       nameColor: inc ? '#1f2937' : '#9ca3af',
       cellColor: inc ? '#6b7280' : '#c2c8d2',
@@ -294,7 +295,7 @@ export function buildView(data, state) {
     salesActive: useSales, ebitdaActive: !useSales,
     basisName: useSales ? 'Revenue' : 'EBITDA',
     basisRowName: useSales ? 'Basis · FY2026E Revenue' : 'Basis · FY2026E EBITDA',
-    basisIsEstimate: useSales,
+    basisIsEstimate: false,
     basisEstimateLabel: 'est.',
     sizeAdjVal: String(sizeAdj),
     sizeOpts: SIZE_OPTS,

@@ -1,12 +1,13 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
-  background: #013f62;
+  background: #003E5F; /* atares dark blue */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
-::selection { background: #3b82f6; color: #fff; }
+.brand { font-family: 'Jost', 'Segoe UI', sans-serif; }
+::selection { background: #00C3BF; color: #fff; }
 
 /* Hover affordance for peer/transaction name links (was style-hover in the artifact) */
 .dc-link { color: inherit; text-decoration: none; border-bottom: 1px solid #cbd5e1; transition: color .15s, border-color .15s; }
-.dc-link:hover { color: #2563eb; border-bottom-color: #2563eb; }
+.dc-link:hover { color: #007775; border-bottom-color: #007775; }
