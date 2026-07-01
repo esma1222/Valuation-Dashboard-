@@ -7,6 +7,13 @@
 //   • EV/EBITDA  — applied to FY2026E EBITDA
 //   • EV/Sales   — applied to a FY2026E revenue estimate
 // The `basis` state toggles which one drives the headline figures.
+//
+// All user-facing strings are produced via the `t` translator (see i18n.js) so
+// the view-model is fully localised.
+
+import { makeT } from './i18n.js'
+
+const defaultT = makeT('en')
 
 // atares brand palette
 const COL = { low: '#98A6AE', median: '#00C3BF', average: '#007775', upside: '#00B167', max: '#F34832' }
@@ -85,7 +92,7 @@ const toTxn = (r) => ({
   impliedEbitda: Number(r.implied_ebitda_musd ?? 0),
 })
 
-export function buildView(data, state) {
+export function buildView(data, state, t = defaultT) {
   const ebitda = Number(data.assumptions?.ebitda_fy2026e ?? 2.62)
   const revenue = Number(data.assumptions?.revenue_fy2026e ?? 7)
   const wComp = Math.max(0, Math.min(100, Number(data.assumptions?.company_weight ?? 50))) / 100
@@ -131,18 +138,17 @@ export function buildView(data, state) {
     const on = d.key === scn
     const col = colorFor(d.key)
     return {
-      key: d.key, label: d.label, sub: d.sub,
+      key: d.key, label: t(`sc.${d.key}`), sub: t(`scsub.${d.key}`),
       btnStyle:
         `cursor:pointer;border:none;border-radius:8px;padding:9px 13px;text-align:left;transition:all .2s;` +
         (on ? `background:${col};color:#fff;box-shadow:0 4px 12px -4px ${col};` : `background:transparent;color:#d1d5db;`),
     }
   })
-  const active = SCENARIO_DEFS.find((d) => d.key === scn)
 
   const multToggle = MULT_DEFS.map((d) => {
     const on = (useSales ? 'sales' : 'ebitda') === d.key
     return {
-      key: d.key, label: d.label, sub: d.sub,
+      key: d.key, label: d.label, sub: t(`multsub.${d.key}`),
       btnStyle:
         `cursor:pointer;border:none;border-radius:9px;padding:9px 18px;text-align:left;transition:all .2s;` +
         (on ? `background:#fff;color:#0b1a38;box-shadow:0 4px 12px -4px rgba(0,0,0,.4);` : `background:transparent;color:#cdd9ee;`),
@@ -156,7 +162,7 @@ export function buildView(data, state) {
   const blendAt = (k) => multOf(compStats, k) * michelsBasis * wComp + multOf(txnStats, k) * michelsBasis * (1 - wComp)
   const rangeLabel = fmtEUR(blendAt('low')) + '–' + fmtEUR(blendAt('max'))
   const blendNote =
-    wComp === 0.5 ? 'equal-weighted' : Math.round(wComp * 100) + '% companies / ' + Math.round((1 - wComp) * 100) + '% transactions'
+    wComp === 0.5 ? t('blendEqual') : t('blendWeighted', { c: Math.round(wComp * 100), t2: Math.round((1 - wComp) * 100) })
 
   const minsX = [compStats, txnStats].filter((s) => s.n > 0).map((s) => s.min)
   const maxsX = [compStats, txnStats].filter((s) => s.n > 0).map((s) => s.max)
@@ -195,8 +201,8 @@ export function buildView(data, state) {
     }
   }
   const methods = [
-    mkMethod('Comparable Cos.', compStats, 'rgba(0,195,191,.20)'),
-    mkMethod('Precedent Txns.', txnStats, 'rgba(0,119,117,.20)'),
+    mkMethod(t('methodCompShort'), compStats, 'rgba(0,195,191,.20)'),
+    mkMethod(t('methodTxnShort'), txnStats, 'rgba(0,119,117,.20)'),
   ]
 
   const mkCards = (stats) =>
@@ -205,7 +211,7 @@ export function buildView(data, state) {
       const col = colorFor(r.k)
       const mult = multOf(stats, r.k)
       return {
-        stat: r.stat, tag: r.tag,
+        stat: t(`cardStat.${r.k}`), tag: t(`cardTag.${r.k}`),
         x: fmtX(mult),
         ev: fmtEUR(mult * michelsBasis),
         labelColor: on ? col : '#9ca3af',
@@ -290,18 +296,18 @@ export function buildView(data, state) {
 
   return {
     scenarios, activeColor, activeColorLight,
-    activeLabel: active.label,
+    activeLabel: t(`sc.${scn}`),
     multToggle, multName,
     salesActive: useSales, ebitdaActive: !useSales,
-    basisName: useSales ? 'Revenue' : 'EBITDA',
-    basisRowName: useSales ? 'Basis · FY2026E Revenue' : 'Basis · FY2026E EBITDA',
+    basisName: useSales ? t('basisNameRevenue') : t('basisNameEbitda'),
+    basisRowName: useSales ? t('basisRevenue') : t('basisEbitda'),
     basisIsEstimate: false,
     basisEstimateLabel: 'est.',
     sizeAdjVal: String(sizeAdj),
-    sizeOpts: SIZE_OPTS,
+    sizeOpts: SIZE_OPTS.map((o) => ({ value: o.value, label: o.value === '0' ? t('sizeNone') : o.label })),
     adjActive,
-    sizeAdjLabel: '−' + sizeAdj + '% on ' + outN + ' size outlier' + (outN === 1 ? '' : 's'),
-    bandHint: 'Applies only to comps outside ≈' + bandLo.toFixed(1) + '–' + bandHi.toFixed(1) + 'm EBITDA',
+    sizeAdjLabel: outN === 1 ? t('sizeAdj1', { p: sizeAdj }) : t('sizeAdj', { p: sizeAdj, n: outN }),
+    bandHint: t('bandHint', { lo: bandLo.toFixed(1), hi: bandHi.toFixed(1) }),
     ebitdaLabel: basisLabel,
     ebitdaShort: basisLabel,
     blendedLabel: fmtEUR(blendedEV),
@@ -312,7 +318,7 @@ export function buildView(data, state) {
       minLabel: fmtX(compStats.min), maxLabel: fmtX(compStats.max), avgLabel: fmtX(compStats.avg),
       cards: mkCards(compStats),
       count: compCount, total: compRaw.length,
-      selLabel: compCount + ' of ' + compRaw.length + ' included',
+      selLabel: t('included', { c: compCount, t2: compRaw.length }),
       someExcluded: compCount !== compRaw.length,
     },
     txn: {
@@ -320,7 +326,7 @@ export function buildView(data, state) {
       minLabel: fmtX(txnStats.min), maxLabel: fmtX(txnStats.max), avgLabel: fmtX(txnStats.avg),
       cards: mkCards(txnStats),
       count: txnCount, total: txnRaw.length,
-      selLabel: txnCount + ' of ' + txnRaw.length + ' included',
+      selLabel: t('included', { c: txnCount, t2: txnRaw.length }),
       someExcluded: txnCount !== txnRaw.length,
     },
     methods, ticks, companies, txns,

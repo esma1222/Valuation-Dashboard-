@@ -25,6 +25,12 @@ database and the UI computes the valuation from them.
 Styled to the **atares** brand identity (Jost display type, dark-blue/teal palette,
 logo lockup).
 
+Available in **English and German** — a header toggle switches the entire UI
+(labels, methodology text, disclaimers); the choice is remembered in
+`localStorage` and defaults to the browser language. Translations live in
+`src/lib/i18n.js`; the German methodology text is stored in the database
+(`valuation_assumptions.methodology_de`).
+
 All figures are indicative, on a cash-free / debt-free basis, and do not
 constitute a fairness opinion or formal valuation.
 
